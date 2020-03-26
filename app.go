@@ -10,6 +10,6 @@ func NewApp() *App {
 }
 
 func (a *App) Run() {
-	log.Println("wasm done")
+	log.Println("wasm done4")
 	select {}
 }

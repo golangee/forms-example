@@ -25,10 +25,10 @@ TMP_GOPATH = $(CURDIR)/${TOOLSDIR}/.gopath
 
 GOROOT = $(shell ${GO} env GOROOT)
 
-all: generate lint test build ## Runs lint, test and build
+all: generate lint test build compress ## Runs lint, test and build and compression for release
 
 clean: ## Removes any temporary and output files
-	rm -rf ${buildDir}
+	rm -rf ${BUILD_DIR}
 
 lint: ## Executes all linters
 	${GOLANGCI_LINT} run --enable-all --exclude-use-default=false
@@ -47,7 +47,12 @@ build: generate ## Performs a build and puts everything into the build directory
 	cp -r static/. ${BUILD_DIR}
 
 
-run: build ## Starts the compiled program
+compress: build ## Applies gzip and brotli compression to build files
+	$(shell find -E ${BUILD_DIR} -regex '.*\.(wasm|js|html)'  -exec gzip -k -f --best "{}" \; )
+	$(shell find -E ${BUILD_DIR} -regex '.*\.(wasm|js|html)'  -exec brotli -f -Z -w 24 "{}" \; )
+
+
+run: clean build ## Starts the compiled program
 	${GO} build -o ${BUILD_DIR}/srv ${MODULE_PATH}/cmd/srv
 	${BUILD_DIR}/srv -d=${BUILD_DIR}
 
