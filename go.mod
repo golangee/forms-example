@@ -4,7 +4,4 @@ go 1.14
 
 replace github.com/worldiety/wtk => ../wtk
 
-require (
-	github.com/golang/gddo v0.0.0-20200324184333-3c2cc9a6329d // indirect
-	github.com/lpar/gzipped v1.1.0
-)
+require github.com/lpar/gzipped/v2 v2.0.0-rc1

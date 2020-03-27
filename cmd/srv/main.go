@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/lpar/gzipped"
+	"github.com/lpar/gzipped/v2"
 	"log"
 	"net/http"
 	"path"
@@ -26,7 +26,7 @@ func main() {
 	directory := flag.String("d", ".", "the directory of static files to host")
 	flag.Parse()
 
-	http.Handle("/", withIndexHTML(gzipped.FileServer(http.Dir(*directory))))
+	http.Handle("/", withIndexHTML(gzipped.FileServer(gzipped.Dir(*directory))))
 
 	log.Printf("Serving %s on HTTP port: %s\n", *directory, *port)
 	log.Fatal(http.ListenAndServe(":"+*port, nil))
