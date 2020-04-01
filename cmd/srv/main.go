@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/lpar/gzipped/v2"
+	"github.com/worldiety/wtk/theme/material"
 	"log"
 	"net/http"
 	"path"
@@ -26,6 +27,7 @@ func main() {
 	directory := flag.String("d", ".", "the directory of static files to host")
 	flag.Parse()
 
+	material.Resources(http.DefaultServeMux)
 	http.Handle("/", withIndexHTML(gzipped.FileServer(gzipped.Dir(*directory))))
 
 	log.Printf("Serving %s on HTTP port: %s\n", *directory, *port)
