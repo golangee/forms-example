@@ -2,7 +2,7 @@ package example
 
 import (
 	. "github.com/worldiety/wtk"
-	"github.com/worldiety/wtk-example/tutorial/section2"
+	"github.com/worldiety/wtk/theme/material/icon"
 	"log"
 	"strconv"
 )
@@ -35,6 +35,12 @@ func NewMyCustomComponent() *MyCustomComponent {
 			text := NewText("your click no " + strconv.Itoa(c.counter))
 			c.VStack.AddViews(text)
 		}),
+		NewButton("button 2").AddClickListener(func(v View) {
+			v.(*Button).SetEnabled(false)
+		}).SetStyleKind(Raised),
+		NewButton("button 3").SetStyleKind(Outlined).AddIcon(icon.AccessAlarm, Trailing),
+		NewButton("button 4").SetStyleKind(Unelevated).AddIcon(icon.AddAlert, Leading),
+		NewButton("button 5").SetStyleKind(Default).AddIcon(icon.Call, Leading).AddIcon(icon.Close, Trailing),
 	).Self(&c.VStack)
 
 	return c
@@ -46,12 +52,15 @@ func (a *App) Run() {
 	Root.RemoveAll()
 
 	Run(Root, func() {
-		//myView := NewMyCustomComponent()
+		myView := NewMyCustomComponent()
 		//myView := section1.NewContentView()
-		myView := section2.NewContentView()
-		Root.AddView(myView)
-	})
+		//myView := section2.NewContentView()
+		//myView := section3.NewContentView()
 
+		frame := NewFrame()
+		frame.SetView(myView)
+		Root.AddView(frame)
+	})
 
 	select {}
 }
