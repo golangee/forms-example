@@ -2,16 +2,22 @@ package example
 
 import (
 	. "github.com/worldiety/wtk"
+	"github.com/worldiety/wtk-example/demo/button"
+	"github.com/worldiety/wtk-example/demo/index"
+	"github.com/worldiety/wtk-example/demo/notfound"
+	"github.com/worldiety/wtk-example/demo/typography"
 	"github.com/worldiety/wtk/theme/material/icon"
-	"log"
 	"strconv"
 )
 
 type App struct {
+	*Application
 }
 
 func NewApp() *App {
-	return &App{}
+	a := &App{}
+	a.Application = NewApplication(a)
+	return a
 }
 
 type MyCustomComponent struct {
@@ -46,21 +52,14 @@ func NewMyCustomComponent() *MyCustomComponent {
 	return c
 }
 
-func (a *App) Run() {
-	log.Println("wasm done4")
+func (a *App) SetView(v View) {
+	a.Application.SetView(NewFrame().SetView(v))
+}
 
-	Root.RemoveAll()
-
-	Run(Root, func() {
-		myView := NewMyCustomComponent()
-		//myView := section1.NewContentView()
-		//myView := section2.NewContentView()
-		//myView := section3.NewContentView()
-
-		frame := NewFrame()
-		frame.SetView(myView)
-		Root.AddView(frame)
-	})
-
-	select {}
+func (a *App) Start() {
+	a.UnmatchedRoute(notfound.FromQuery)
+	a.Route(index.Path, index.FromQuery)
+	a.Route(button.Path, button.FromQuery)
+	a.Route(typography.Path, typography.FromQuery)
+	a.Application.Start()
 }
