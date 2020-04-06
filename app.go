@@ -3,6 +3,7 @@ package example
 import (
 	. "github.com/worldiety/wtk"
 	"github.com/worldiety/wtk-example/demo/button"
+	"github.com/worldiety/wtk-example/demo/dialog"
 	"github.com/worldiety/wtk-example/demo/index"
 	"github.com/worldiety/wtk-example/demo/notfound"
 	"github.com/worldiety/wtk-example/demo/textarea"
@@ -65,5 +66,6 @@ func (a *App) Start() {
 	a.Route(typography.Path, typography.FromQuery)
 	a.Route(textfield.Path, textfield.FromQuery)
 	a.Route(textarea.Path, textarea.FromQuery)
+	a.Route(dialog.Path, dialog.FromQuery)
 	a.Application.Start()
 }
