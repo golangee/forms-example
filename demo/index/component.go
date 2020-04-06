@@ -3,6 +3,7 @@ package index
 import (
 	. "github.com/worldiety/wtk"
 	"github.com/worldiety/wtk-example/demo/button"
+	"github.com/worldiety/wtk-example/demo/textarea"
 	"github.com/worldiety/wtk-example/demo/textfield"
 	"github.com/worldiety/wtk-example/demo/typography"
 )
@@ -38,7 +39,10 @@ func NewContentView() *ContentView {
 		}).Style(Padding()),
 		NewButton("textfields").AddClickListener(func(v View) {
 			v.Context().Navigate(textfield.Path)
-		}),
+		}).Style(Padding()),
+		NewButton("textareas").AddClickListener(func(v View) {
+			v.Context().Navigate(textarea.Path)
+		}).Style(Padding()),
 	)}
 }
 
