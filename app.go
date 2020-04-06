@@ -5,6 +5,7 @@ import (
 	"github.com/worldiety/wtk-example/demo/button"
 	"github.com/worldiety/wtk-example/demo/index"
 	"github.com/worldiety/wtk-example/demo/notfound"
+	"github.com/worldiety/wtk-example/demo/textfield"
 	"github.com/worldiety/wtk-example/demo/typography"
 	"github.com/worldiety/wtk/theme/material/icon"
 	"strconv"
@@ -61,5 +62,6 @@ func (a *App) Start() {
 	a.Route(index.Path, index.FromQuery)
 	a.Route(button.Path, button.FromQuery)
 	a.Route(typography.Path, typography.FromQuery)
+	a.Route(textfield.Path, textfield.FromQuery)
 	a.Application.Start()
 }
