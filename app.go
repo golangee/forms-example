@@ -5,6 +5,7 @@ import (
 	"github.com/worldiety/wtk-example/demo/button"
 	"github.com/worldiety/wtk-example/demo/dialog"
 	"github.com/worldiety/wtk-example/demo/index"
+	"github.com/worldiety/wtk-example/demo/menu"
 	"github.com/worldiety/wtk-example/demo/notfound"
 	"github.com/worldiety/wtk-example/demo/textarea"
 	"github.com/worldiety/wtk-example/demo/textfield"
@@ -67,5 +68,6 @@ func (a *App) Start() {
 	a.Route(textfield.Path, textfield.FromQuery)
 	a.Route(textarea.Path, textarea.FromQuery)
 	a.Route(dialog.Path, dialog.FromQuery)
+	a.Route(menu.Path, menu.FromQuery)
 	a.Application.Start()
 }

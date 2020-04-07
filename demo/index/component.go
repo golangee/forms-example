@@ -4,6 +4,7 @@ import (
 	. "github.com/worldiety/wtk"
 	"github.com/worldiety/wtk-example/demo/button"
 	"github.com/worldiety/wtk-example/demo/dialog"
+	"github.com/worldiety/wtk-example/demo/menu"
 	"github.com/worldiety/wtk-example/demo/textarea"
 	"github.com/worldiety/wtk-example/demo/textfield"
 	"github.com/worldiety/wtk-example/demo/typography"
@@ -46,6 +47,9 @@ func NewContentView() *ContentView {
 		}).Style(Padding()),
 		NewButton("dialogs").AddClickListener(func(v View) {
 			v.Context().Navigate(dialog.Path)
+		}).Style(Padding()),
+		NewButton("menu").AddClickListener(func(v View) {
+			v.Context().Navigate(menu.Path)
 		}).Style(Padding()),
 	)}
 }
