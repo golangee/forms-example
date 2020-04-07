@@ -7,6 +7,7 @@ import (
 	"github.com/worldiety/wtk-example/demo/menu"
 	"github.com/worldiety/wtk-example/demo/textarea"
 	"github.com/worldiety/wtk-example/demo/textfield"
+	"github.com/worldiety/wtk-example/demo/topappbar"
 	"github.com/worldiety/wtk-example/demo/typography"
 )
 
@@ -50,6 +51,9 @@ func NewContentView() *ContentView {
 		}).Style(Padding()),
 		NewButton("menu").AddClickListener(func(v View) {
 			v.Context().Navigate(menu.Path)
+		}).Style(Padding()),
+		NewButton("top app bar").AddClickListener(func(v View) {
+			v.Context().Navigate(topappbar.Path)
 		}).Style(Padding()),
 	)}
 }

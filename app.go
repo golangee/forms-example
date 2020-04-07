@@ -9,6 +9,7 @@ import (
 	"github.com/worldiety/wtk-example/demo/notfound"
 	"github.com/worldiety/wtk-example/demo/textarea"
 	"github.com/worldiety/wtk-example/demo/textfield"
+	"github.com/worldiety/wtk-example/demo/topappbar"
 	"github.com/worldiety/wtk-example/demo/typography"
 	"github.com/worldiety/wtk/theme/material/icon"
 	"strconv"
@@ -57,7 +58,15 @@ func NewMyCustomComponent() *MyCustomComponent {
 }
 
 func (a *App) SetView(v View) {
-	a.Application.SetView(NewFrame().SetView(v))
+	wrapper := NewGroup().Style(PadTop(64)).AddViews(v)
+	vstack := NewGroup().AddViews(
+		NewTopAppBar().
+			SetTitle("wtk demo").
+			SetNavigation(icon.Menu, nil),
+		NewFrame().SetView(wrapper),
+	)
+
+	a.Application.SetView(vstack)
 }
 
 func (a *App) Start() {
@@ -69,5 +78,6 @@ func (a *App) Start() {
 	a.Route(textarea.Path, textarea.FromQuery)
 	a.Route(dialog.Path, dialog.FromQuery)
 	a.Route(menu.Path, menu.FromQuery)
+	a.Route(topappbar.Path, topappbar.FromQuery)
 	a.Application.Start()
 }
