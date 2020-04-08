@@ -6,6 +6,7 @@ import (
 	"github.com/worldiety/wtk-example/demo/dialog"
 	"github.com/worldiety/wtk-example/demo/drawer"
 	"github.com/worldiety/wtk-example/demo/index"
+	"github.com/worldiety/wtk-example/demo/list"
 	"github.com/worldiety/wtk-example/demo/menu"
 	"github.com/worldiety/wtk-example/demo/notfound"
 	"github.com/worldiety/wtk-example/demo/textarea"
@@ -80,5 +81,6 @@ func (a *App) Start() {
 	a.Route(menu.Path, menu.FromQuery)
 	a.Route(topappbar.Path, topappbar.FromQuery)
 	a.Route(drawer.Path, drawer.FromQuery)
+	a.Route(list.Path, list.FromQuery)
 	a.Application.Start()
 }
