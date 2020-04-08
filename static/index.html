@@ -2,7 +2,10 @@
 <head>
     <meta http-equiv="Pragma" content="no-cache">
     <meta charset="utf-8"/>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'/>
+    <!-- <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'/> -->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <link rel="stylesheet" type="text/css" href="/material/wtk.css">
     <link rel="stylesheet" type="text/css" href="/material/material-components-web.min.css">
 
@@ -27,63 +30,6 @@
         }
     </script>
     <script type="text/javascript" src="/material/material-components-web.min.js"></script>
-    <script>
-        setTimeout(function () {
-            const topAppBarElement = document.querySelector('.mdc-top-app-bar');
-            const listEl = document.querySelector('.mdc-drawer .mdc-list');
-            const drawerElement = document.querySelector('.mdc-drawer');
-            const mainContentEl = document.querySelector('.main-content');
-
-            var drawerMode = 0;
-            // Initialize either modal or permanent drawer
-
-            const initModalDrawer = () => {
-                drawerElement.classList.add("mdc-drawer--modal");
-                const drawer = mdc.drawer.MDCDrawer.attachTo(drawerElement);
-                drawer.open = false;
-
-                const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(topAppBarElement);
-                topAppBar.setScrollTarget(mainContentEl);
-                topAppBar.listen('MDCTopAppBar:nav', () => {
-                    drawer.open = !drawer.open;
-                });
-
-                listEl.addEventListener('click', (event) => {
-                    drawer.open = false;
-                });
-
-                drawerMode = 1;
-
-                return drawer;
-            }
-
-            const initPermanentDrawer = () => {
-                drawerElement.classList.remove("mdc-drawer--modal");
-                const list = new mdc.list.MDCList(listEl);
-                list.wrapFocus = true;
-                drawerMode = 2;
-                return list;
-            }
-
-            let drawer = window.matchMedia("(max-width: 900px)").matches ?
-                initModalDrawer() : initPermanentDrawer();
-
-            // Toggle between permanent drawer and modal drawer at breakpoint 900px
-
-            const resizeHandler = () => {
-                if (window.matchMedia("(max-width: 900px)").matches && drawerMode === 2) {
-                    drawer.destroy();
-                    drawer = initModalDrawer();
-                } else if (window.matchMedia("(min-width: 900px)").matches && drawerMode === 1) {
-                    drawer.destroy();
-                    drawer = initPermanentDrawer();
-                }
-            }
-            window.addEventListener('resize', resizeHandler);
-        }, 3000);
-
-
-    </script>
     <!-- <script type="text/javascript" src="/material/material-components-web.js"></script> -->
 </head>
 <body>

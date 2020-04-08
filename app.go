@@ -4,6 +4,7 @@ import (
 	. "github.com/worldiety/wtk"
 	"github.com/worldiety/wtk-example/demo/button"
 	"github.com/worldiety/wtk-example/demo/dialog"
+	"github.com/worldiety/wtk-example/demo/drawer"
 	"github.com/worldiety/wtk-example/demo/index"
 	"github.com/worldiety/wtk-example/demo/menu"
 	"github.com/worldiety/wtk-example/demo/notfound"
@@ -58,24 +59,12 @@ func NewMyCustomComponent() *MyCustomComponent {
 }
 
 func (a *App) SetView(v View) {
-	/*
-		wrapper := NewGroup().Style(PadTop(64)).AddViews(v)
-		vstack := NewGroup().AddViews(
-			NewTopAppBar().
-				SetTitle("wtk demo").
-				SetNavigation(icon.Menu, nil),
-			NewFrame().SetView(wrapper),
-		)
-
-		a.Application.SetView(vstack)*/
-
 	a.Application.SetView(
 		NewDrawer(
 			NewTopAppBar().
 				SetTitle("wtk demo").
 				SetNavigation(icon.Menu, nil).
-				AddActions(NewIconItem(icon.FileDownload,"download",nil)),
-
+				AddActions(NewIconItem(icon.FileDownload, "download", nil)),
 			v),
 	)
 }
@@ -90,5 +79,6 @@ func (a *App) Start() {
 	a.Route(dialog.Path, dialog.FromQuery)
 	a.Route(menu.Path, menu.FromQuery)
 	a.Route(topappbar.Path, topappbar.FromQuery)
+	a.Route(drawer.Path, drawer.FromQuery)
 	a.Application.Start()
 }
