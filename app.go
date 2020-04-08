@@ -58,15 +58,26 @@ func NewMyCustomComponent() *MyCustomComponent {
 }
 
 func (a *App) SetView(v View) {
-	wrapper := NewGroup().Style(PadTop(64)).AddViews(v)
-	vstack := NewGroup().AddViews(
-		NewTopAppBar().
-			SetTitle("wtk demo").
-			SetNavigation(icon.Menu, nil),
-		NewFrame().SetView(wrapper),
-	)
+	/*
+		wrapper := NewGroup().Style(PadTop(64)).AddViews(v)
+		vstack := NewGroup().AddViews(
+			NewTopAppBar().
+				SetTitle("wtk demo").
+				SetNavigation(icon.Menu, nil),
+			NewFrame().SetView(wrapper),
+		)
 
-	a.Application.SetView(vstack)
+		a.Application.SetView(vstack)*/
+
+	a.Application.SetView(
+		NewDrawer(
+			NewTopAppBar().
+				SetTitle("wtk demo").
+				SetNavigation(icon.Menu, nil).
+				AddActions(NewIconItem(icon.FileDownload,"download",nil)),
+
+			v),
+	)
 }
 
 func (a *App) Start() {
