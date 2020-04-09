@@ -14,7 +14,9 @@ import (
 	"github.com/worldiety/wtk-example/demo/topappbar"
 	"github.com/worldiety/wtk-example/demo/typography"
 	"github.com/worldiety/wtk/theme/material/icon"
+	"path/filepath"
 	"strconv"
+	"time"
 )
 
 type App struct {
@@ -59,28 +61,55 @@ func NewMyCustomComponent() *MyCustomComponent {
 	return c
 }
 
-func (a *App) SetView(v View) {
-	a.Application.SetView(
-		NewDrawer(
+func (a *App) WithDrawer(f func(q Query) View) func(Query) View {
+	return func(query Query) View {
+		v := f(query)
+
+		var items []LstItem
+		items = append(items, NewListSeparator(), NewListHeader("components"))
+		for _, route := range a.Context().Routes() {
+			fPath := route.Path
+			name := filepath.Base(route.Path)
+			if fPath == "/" {
+				name = "home"
+			}
+			item := NewListItem(name)
+			if route.Path == query.Path() {
+				item.SetSelected(true)
+			}
+			items = append(items, item.AddClickListener(func(v View) {
+				go func() {
+					time.Sleep(200 * time.Millisecond) // wait for drawer animation
+					a.Context().Navigate(fPath)
+				}()
+			}))
+		}
+
+		return NewDrawer(
 			NewTopAppBar().
 				SetTitle("wtk demo").
 				SetNavigation(icon.Menu, nil).
 				AddActions(NewIconItem(icon.FileDownload, "download", nil)),
-			v),
-	)
+			NewVStack().AddViews(
+				NewText("your demo").Style(Font(DrawerTitle)),
+				NewText("anonymous").Style(Font(DrawerSubTitle)),
+			),
+			NewList().AddItems(items...),
+			v)
+	}
 }
 
 func (a *App) Start() {
 	a.UnmatchedRoute(notfound.FromQuery)
-	a.Route(index.Path, index.FromQuery)
-	a.Route(button.Path, button.FromQuery)
-	a.Route(typography.Path, typography.FromQuery)
-	a.Route(textfield.Path, textfield.FromQuery)
-	a.Route(textarea.Path, textarea.FromQuery)
-	a.Route(dialog.Path, dialog.FromQuery)
-	a.Route(menu.Path, menu.FromQuery)
-	a.Route(topappbar.Path, topappbar.FromQuery)
-	a.Route(drawer.Path, drawer.FromQuery)
-	a.Route(list.Path, list.FromQuery)
+	a.Route(index.Path, a.WithDrawer(index.FromQuery))
+	a.Route(button.Path, a.WithDrawer(button.FromQuery))
+	a.Route(typography.Path, a.WithDrawer(typography.FromQuery))
+	a.Route(textfield.Path, a.WithDrawer(textfield.FromQuery))
+	a.Route(textarea.Path, a.WithDrawer(textarea.FromQuery))
+	a.Route(dialog.Path, a.WithDrawer(dialog.FromQuery))
+	a.Route(menu.Path, a.WithDrawer(menu.FromQuery))
+	a.Route(topappbar.Path, a.WithDrawer(topappbar.FromQuery))
+	a.Route(drawer.Path, a.WithDrawer(drawer.FromQuery))
+	a.Route(list.Path, a.WithDrawer(list.FromQuery))
 	a.Application.Start()
 }
