@@ -10,6 +10,7 @@ import (
 	"github.com/worldiety/wtk-example/demo/list"
 	"github.com/worldiety/wtk-example/demo/menu"
 	"github.com/worldiety/wtk-example/demo/notfound"
+	"github.com/worldiety/wtk-example/demo/table"
 	"github.com/worldiety/wtk-example/demo/textarea"
 	"github.com/worldiety/wtk-example/demo/textfield"
 	"github.com/worldiety/wtk-example/demo/theme"
@@ -35,12 +36,18 @@ func (a *App) WithDrawer(f func(q Query) View) func(Query) View {
 		v := f(query)
 
 		var items []LstItem
-		items = append(items, NewListSeparator(), NewListHeader("components"))
+		items = append(items,
+			NewListItem("home").SetLeadingView(NewIcon(icon.Home)).AddClickListener(func(v View) {
+				a.Context().Navigate("/")
+			}),
+			NewListSeparator(),
+			NewListHeader("components"),
+		)
 		for _, route := range a.Context().Routes() {
 			fPath := route.Path
 			name := filepath.Base(route.Path)
 			if fPath == "/" {
-				name = "home"
+				continue
 			}
 			item := NewListItem(name)
 			if route.Path == query.Path() {
@@ -58,7 +65,9 @@ func (a *App) WithDrawer(f func(q Query) View) func(Query) View {
 			NewTopAppBar().
 				SetTitle("wtk demo").
 				SetNavigation(icon.Menu, nil).
-				AddActions(NewIconItem(icon.FileDownload, "download", nil)),
+				AddActions(NewIconItem(icon.Help, "download", func(v View) {
+					ShowMessage(v, "wtk demo")
+				})),
 			NewVStack().AddViews(
 				NewText("your demo").Style(Font(DrawerTitle)),
 				NewText("anonymous").Style(Font(DrawerSubTitle)),
@@ -82,5 +91,6 @@ func (a *App) Start() {
 	a.Route(list.Path, a.WithDrawer(list.FromQuery))
 	a.Route(link.Path, a.WithDrawer(link.FromQuery))
 	a.Route(theme.Path, a.WithDrawer(theme.FromQuery))
+	a.Route(table.Path, a.WithDrawer(table.FromQuery))
 	a.Application.Start()
 }
