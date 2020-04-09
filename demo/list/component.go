@@ -30,8 +30,8 @@ func NewContentView() *ContentView {
 			NewListItem("line 2"),
 			NewListSeparator(),
 			NewListHeader("now with icons"),
-			NewListItem("line 3").SetIcon(icon.Add),
-			NewListItem("line 3").SetIcon(icon.Favorite).SetSelected(true),
+			NewListItem("line 3").SetLeadingView(NewIcon(icon.Add)),
+			NewListItem("line 3").SetLeadingView(NewIcon(icon.Add)),
 		).Style(Repel()),
 
 		NewText("nothing selected").Self(&view.selectMsg),
@@ -49,7 +49,7 @@ func NewContentView() *ContentView {
 
 		NewList().AddItems(
 			NewListItem("cool").
-				SetIcon(icon.Call).
+				SetLeadingView(NewIcon(icon.Add)).
 				SetTrailingView(
 					NewButton("").
 						AddIcon(icon.MoreVert, Leading).
@@ -57,8 +57,14 @@ func NewContentView() *ContentView {
 							ShowMenu(v, NewMenuItem("awesome", nil))
 						}),
 				),
+		).Style(Repel()),
 
-		),
+		NewList().AddItems(
+			NewListTwoLineItem("important information", "with some more details"),
+			NewListTwoLineItem("hello", "world"),
+			NewListTwoLineItem("hello", "world").SetLeadingView(NewIcon(icon.Favorite).Style(ForegroundColor(RGBA(255, 0, 0, 255)))),
+			NewListTwoLineItem("hello", "world").SetLeadingView(NewIcon(icon.Add)).SetTrailingView(NewIcon(icon.SkipNext)),
+		).Style(Repel()),
 
 		NewCode(GoSyntax, code),
 	)
