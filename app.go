@@ -3,6 +3,7 @@ package example
 import (
 	. "github.com/worldiety/wtk"
 	"github.com/worldiety/wtk-example/demo/button"
+	"github.com/worldiety/wtk-example/demo/checkbox"
 	"github.com/worldiety/wtk-example/demo/dialog"
 	"github.com/worldiety/wtk-example/demo/drawer"
 	"github.com/worldiety/wtk-example/demo/index"
@@ -92,5 +93,6 @@ func (a *App) Start() {
 	a.Route(link.Path, a.WithDrawer(link.FromQuery))
 	a.Route(theme.Path, a.WithDrawer(theme.FromQuery))
 	a.Route(table.Path, a.WithDrawer(table.FromQuery))
+	a.Route(checkbox.Path, a.WithDrawer(checkbox.FromQuery))
 	a.Application.Start()
 }
