@@ -19,7 +19,7 @@ func NewContentView() *ContentView {
 		colorButtons.AddViews(
 			NewButton(name).
 				AddClickListener(func(v View) {
-					Theme().SetPrimaryColor(myColor)
+					Theme().SetColor(myColor)
 				}).Style(ForegroundColor(myColor)),
 		)
 	}

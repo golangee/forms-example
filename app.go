@@ -11,6 +11,7 @@ import (
 	"github.com/worldiety/wtk-example/demo/list"
 	"github.com/worldiety/wtk-example/demo/menu"
 	"github.com/worldiety/wtk-example/demo/notfound"
+	"github.com/worldiety/wtk-example/demo/picker"
 	"github.com/worldiety/wtk-example/demo/table"
 	"github.com/worldiety/wtk-example/demo/textarea"
 	"github.com/worldiety/wtk-example/demo/textfield"
@@ -94,5 +95,6 @@ func (a *App) Start() {
 	a.Route(theme.Path, a.WithDrawer(theme.FromQuery))
 	a.Route(table.Path, a.WithDrawer(table.FromQuery))
 	a.Route(checkbox.Path, a.WithDrawer(checkbox.FromQuery))
+	a.Route(picker.Path, a.WithDrawer(picker.FromQuery))
 	a.Application.Start()
 }
