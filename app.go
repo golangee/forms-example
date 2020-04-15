@@ -7,6 +7,7 @@ import (
 	"github.com/worldiety/wtk-example/demo/dialog"
 	"github.com/worldiety/wtk-example/demo/drawer"
 	"github.com/worldiety/wtk-example/demo/index"
+	"github.com/worldiety/wtk-example/demo/linearprogress"
 	"github.com/worldiety/wtk-example/demo/link"
 	"github.com/worldiety/wtk-example/demo/list"
 	"github.com/worldiety/wtk-example/demo/menu"
@@ -98,5 +99,6 @@ func (a *App) Start() {
 	a.Route(checkbox.Path, a.WithDrawer(checkbox.FromQuery))
 	a.Route(picker.Path, a.WithDrawer(picker.FromQuery))
 	a.Route(tabview.Path, a.WithDrawer(tabview.FromQuery))
+	a.Route(linearprogress.Path, a.WithDrawer(linearprogress.FromQuery))
 	a.Application.Start()
 }
