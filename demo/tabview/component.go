@@ -30,6 +30,11 @@ func NewContentView() *ContentView {
 		).SetActive(1).Style(Repel()),
 
 		NewTabView().SetTabs(
+			NewTabWithStackedIcon(icon.Favorite, "tab 1", NewText("content 1")),
+			NewTabWithStackedIcon(icon.Help, "tab 2", NewText("content 2")),
+		).SetActive(1).Style(Repel()),
+
+		NewTabView().SetTabs(
 			NewTab("tabulator 1", NewText("content 1")),
 			NewTab("tabulator 2", NewText("content 2")),
 			NewTab("tabulator 3", NewText("content 3")),
@@ -69,7 +74,7 @@ func NewContentView() *ContentView {
 		NewText("Tabview").Style(Font(Headline1)),
 		NewText("Tabs provide navigational access to groups of content "+
 			"which is related to each other at the same level of hierarchy.").Style(Font(Body)),
-		
+
 		NewTabView().SetTabs(
 			NewTab("tab 1", NewText("content 1")),
 			NewTab("tab 2", NewText("content 2")),
@@ -78,6 +83,11 @@ func NewContentView() *ContentView {
 		NewTabView().SetTabs(
 			NewTabWithIcon(icon.Favorite, "tab 1", NewText("content 1")),
 			NewTabWithIcon(icon.Help, "tab 2", NewText("content 2")),
+		).SetActive(1).Style(Repel()),
+
+		NewTabView().SetTabs(
+			NewTabWithStackedIcon(icon.Favorite, "tab 1", NewText("content 1")),
+			NewTabWithStackedIcon(icon.Help, "tab 2", NewText("content 2")),
 		).SetActive(1).Style(Repel()),
 
 		NewTabView().SetTabs(

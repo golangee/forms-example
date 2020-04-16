@@ -14,6 +14,7 @@ import (
 	"github.com/worldiety/wtk-example/demo/menu"
 	"github.com/worldiety/wtk-example/demo/notfound"
 	"github.com/worldiety/wtk-example/demo/picker"
+	"github.com/worldiety/wtk-example/demo/snackbar"
 	"github.com/worldiety/wtk-example/demo/table"
 	"github.com/worldiety/wtk-example/demo/tabview"
 	"github.com/worldiety/wtk-example/demo/textarea"
@@ -102,5 +103,6 @@ func (a *App) Start() {
 	a.Route(tabview.Path, a.WithDrawer(tabview.FromQuery))
 	a.Route(linearprogress.Path, a.WithDrawer(linearprogress.FromQuery))
 	a.Route(circularprogress.Path, a.WithDrawer(circularprogress.FromQuery))
+	a.Route(snackbar.Path, a.WithDrawer(snackbar.FromQuery))
 	a.Application.Start()
 }
