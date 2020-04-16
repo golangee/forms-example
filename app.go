@@ -4,6 +4,7 @@ import (
 	. "github.com/worldiety/wtk"
 	"github.com/worldiety/wtk-example/demo/button"
 	"github.com/worldiety/wtk-example/demo/checkbox"
+	"github.com/worldiety/wtk-example/demo/circularprogress"
 	"github.com/worldiety/wtk-example/demo/dialog"
 	"github.com/worldiety/wtk-example/demo/drawer"
 	"github.com/worldiety/wtk-example/demo/index"
@@ -100,5 +101,6 @@ func (a *App) Start() {
 	a.Route(picker.Path, a.WithDrawer(picker.FromQuery))
 	a.Route(tabview.Path, a.WithDrawer(tabview.FromQuery))
 	a.Route(linearprogress.Path, a.WithDrawer(linearprogress.FromQuery))
+	a.Route(circularprogress.Path, a.WithDrawer(circularprogress.FromQuery))
 	a.Application.Start()
 }
