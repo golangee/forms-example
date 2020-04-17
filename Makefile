@@ -13,7 +13,10 @@ BUILD_FILE_PATH = ${MODULE_PATH}
 ## which linter version to use?
 GOLANGCI_LINT_VERSION = v1.24.0
 
-LDFLAGS = -X $(MODULE_PATH).BuildGitCommit=$(CI_COMMIT_SHA) -X $(MODULE_PATH).BuildGitBranch=$(CI_COMMIT_REF_NAME)
+currentDate := $(shell date +"%Y.%m.%d-%H:%M:%S")
+currentCommit := $(shell git rev-parse HEAD)
+
+LDFLAGS = -X $(MODULE_PATH)/build.Time=${currentDate} -X $(MODULE_PATH)/build.Commit=${currentCommit}
 
 TMP_DIR = $(TMPDIR)/$(MODULE_PATH)
 BUILD_DIR = .build
@@ -53,7 +56,7 @@ compress: build ## Applies gzip and brotli compression to build files
 
 
 run: clean build ## Starts the compiled program
-	${GO} build -o ${BUILD_DIR}/srv ${MODULE_PATH}/cmd/srv
+	${GO} build -ldflags "${LDFLAGS}" -o ${BUILD_DIR}/srv ${MODULE_PATH}/cmd/srv
 	${BUILD_DIR}/srv -d=${BUILD_DIR}
 
 

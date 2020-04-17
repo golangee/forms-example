@@ -2,6 +2,7 @@ package example
 
 import (
 	. "github.com/worldiety/wtk"
+	"github.com/worldiety/wtk-example/build"
 	"github.com/worldiety/wtk-example/demo/button"
 	"github.com/worldiety/wtk-example/demo/checkbox"
 	"github.com/worldiety/wtk-example/demo/circularprogress"
@@ -33,7 +34,7 @@ type App struct {
 
 func NewApp() *App {
 	a := &App{}
-	a.Application = NewApplication(a)
+	a.Application = NewApplication(a,build.Env().String())
 	return a
 }
 
