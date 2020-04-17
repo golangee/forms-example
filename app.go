@@ -15,6 +15,7 @@ import (
 	"github.com/worldiety/wtk-example/demo/menu"
 	"github.com/worldiety/wtk-example/demo/notfound"
 	"github.com/worldiety/wtk-example/demo/picker"
+	"github.com/worldiety/wtk-example/demo/smallcontent"
 	"github.com/worldiety/wtk-example/demo/snackbar"
 	"github.com/worldiety/wtk-example/demo/table"
 	"github.com/worldiety/wtk-example/demo/tabview"
@@ -34,13 +35,13 @@ type App struct {
 
 func NewApp() *App {
 	a := &App{}
-	a.Application = NewApplication(a,build.Env().String())
+	a.Application = NewApplication(a, build.Env().String())
 	return a
 }
 
 func (a *App) WithDrawer(f func(q Query) View) func(Query) View {
 	return func(query Query) View {
-		v := f(query)
+		v := NewGroup(f(query)).Style(Padding())
 
 		var items []LstItem
 		items = append(items,
@@ -105,5 +106,6 @@ func (a *App) Start() {
 	a.Route(linearprogress.Path, a.WithDrawer(linearprogress.FromQuery))
 	a.Route(circularprogress.Path, a.WithDrawer(circularprogress.FromQuery))
 	a.Route(snackbar.Path, a.WithDrawer(snackbar.FromQuery))
+	a.Route(smallcontent.Path, a.WithDrawer(smallcontent.FromQuery))
 	a.Application.Start()
 }
