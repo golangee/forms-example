@@ -35,6 +35,18 @@ func NewContentView() *ContentView {
 			SetMaxLength(10).
 			Style(Repel()),
 
+		NewText("disabled"),
+		NewTextArea().
+			SetLabel("your multiline input").
+			SetEnabled(false).
+			Style(Repel()),
+
+		NewText("invalid"),
+		NewTextArea().
+			SetLabel("your multiline input").
+			SetInvalid(true).
+			Style(Repel()),
+
 		NewCode(GoSyntax, code),
 	)}
 }
