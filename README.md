@@ -1,6 +1,6 @@
 # wtk-example
 wtk kitchen sink demo. It is inspired by the [SwiftUI tutorial](https://developer.apple.com/tutorials/swiftui/creating-and-combining-views).
-The only available implementation is [WTK](https://github.com/worldiety/wtk) with a WASM HTML core. 
+The only available implementation is [WTK](https://github.com/golangee/forms) with a WASM HTML core. 
 
 ## Section 1
 
@@ -12,7 +12,7 @@ prefixed with *New* followed by your views name.
 ```go
 package section1
 
-import . "github.com/worldiety/wtk"
+import . "github.com/golangee/forms"
 
 type ContentView struct {
 	*Text
@@ -30,7 +30,7 @@ You can style your View in a fluent way, using the predefined parameters.
 ```go
 package section2
 
-import . "github.com/worldiety/wtk"
+import . "github.com/golangee/forms"
 
 type ContentView struct {
 	*Text

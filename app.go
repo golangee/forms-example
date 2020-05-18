@@ -1,30 +1,44 @@
+// Copyright 2020 Torben Schinke
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package example
 
 import (
-	. "github.com/worldiety/wtk"
-	"github.com/worldiety/wtk-example/build"
-	"github.com/worldiety/wtk-example/demo/button"
-	"github.com/worldiety/wtk-example/demo/checkbox"
-	"github.com/worldiety/wtk-example/demo/circularprogress"
-	"github.com/worldiety/wtk-example/demo/dialog"
-	"github.com/worldiety/wtk-example/demo/drawer"
-	"github.com/worldiety/wtk-example/demo/index"
-	"github.com/worldiety/wtk-example/demo/linearprogress"
-	"github.com/worldiety/wtk-example/demo/link"
-	"github.com/worldiety/wtk-example/demo/list"
-	"github.com/worldiety/wtk-example/demo/menu"
-	"github.com/worldiety/wtk-example/demo/notfound"
-	"github.com/worldiety/wtk-example/demo/picker"
-	"github.com/worldiety/wtk-example/demo/smallcontent"
-	"github.com/worldiety/wtk-example/demo/snackbar"
-	"github.com/worldiety/wtk-example/demo/table"
-	"github.com/worldiety/wtk-example/demo/tabview"
-	"github.com/worldiety/wtk-example/demo/textarea"
-	"github.com/worldiety/wtk-example/demo/textfield"
-	"github.com/worldiety/wtk-example/demo/theme"
-	"github.com/worldiety/wtk-example/demo/topappbar"
-	"github.com/worldiety/wtk-example/demo/typography"
-	"github.com/worldiety/wtk/theme/material/icon"
+	. "github.com/golangee/forms"
+	"github.com/golangee/forms-example/build"
+	"github.com/golangee/forms-example/demo/button"
+	"github.com/golangee/forms-example/demo/checkbox"
+	"github.com/golangee/forms-example/demo/circularprogress"
+	"github.com/golangee/forms-example/demo/dialog"
+	"github.com/golangee/forms-example/demo/drawer"
+	"github.com/golangee/forms-example/demo/index"
+	"github.com/golangee/forms-example/demo/linearprogress"
+	"github.com/golangee/forms-example/demo/link"
+	"github.com/golangee/forms-example/demo/list"
+	"github.com/golangee/forms-example/demo/menu"
+	"github.com/golangee/forms-example/demo/notfound"
+	"github.com/golangee/forms-example/demo/picker"
+	"github.com/golangee/forms-example/demo/smallcontent"
+	"github.com/golangee/forms-example/demo/snackbar"
+	"github.com/golangee/forms-example/demo/table"
+	"github.com/golangee/forms-example/demo/tabview"
+	"github.com/golangee/forms-example/demo/textarea"
+	"github.com/golangee/forms-example/demo/textfield"
+	"github.com/golangee/forms-example/demo/theme"
+	"github.com/golangee/forms-example/demo/topappbar"
+	"github.com/golangee/forms-example/demo/typography"
+	"github.com/golangee/forms/theme/material/icon"
 	"path/filepath"
 	"time"
 )

@@ -2,10 +2,10 @@
 ARTIFACT_NAME = blub
 
 ## for the module itself
-MODULE_PATH = github.com/worldiety/wtk-example
+MODULE_PATH = github.com/golangee/forms-example
 
 ## the path which contains the main package to execute
-MAIN_PATH = github.com/worldiety/wtk-example/cmd/wasm
+MAIN_PATH = github.com/golangee/forms-example/cmd/wasm
 
 ## for ldflags replacement
 BUILD_FILE_PATH = ${MODULE_PATH}
