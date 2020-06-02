@@ -23,6 +23,7 @@ import (
 	"github.com/golangee/forms-example/demo/circularprogress"
 	"github.com/golangee/forms-example/demo/dialog"
 	"github.com/golangee/forms-example/demo/drawer"
+	"github.com/golangee/forms-example/demo/i18n"
 	"github.com/golangee/forms-example/demo/index"
 	"github.com/golangee/forms-example/demo/linearprogress"
 	"github.com/golangee/forms-example/demo/link"
@@ -123,5 +124,6 @@ func (a *App) Start() {
 	a.Route(snackbar.Path, a.WithDrawer(snackbar.FromQuery))
 	a.Route(smallcontent.Path, a.WithDrawer(smallcontent.FromQuery))
 	a.Route(card.Path, a.WithDrawer(card.FromQuery))
+	a.Route(i18n.Path, a.WithDrawer(i18n.FromQuery))
 	a.Application.Start()
 }

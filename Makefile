@@ -42,7 +42,6 @@ test: ## Executes the tests
 .PHONY: build generate setup
 
 build: generate ## Performs a build and puts everything into the build directory
-	${GO} generate ./...
 	GOOS=js GOARCH=wasm ${GO} build -ldflags "${LDFLAGS}" -o ${BUILD_DIR}/app.wasm ${MAIN_PATH}
 
 
@@ -61,7 +60,7 @@ run: clean build ## Starts the compiled program
 
 
 generate: ## Executes go generate
-	${GO} generate
+	${GO} generate ./...
 
 setup: installGolangCi ## Installs golangci-lint
 
