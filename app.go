@@ -18,6 +18,7 @@ import (
 	. "github.com/golangee/forms"
 	"github.com/golangee/forms-example/build"
 	"github.com/golangee/forms-example/demo/button"
+	"github.com/golangee/forms-example/demo/card"
 	"github.com/golangee/forms-example/demo/checkbox"
 	"github.com/golangee/forms-example/demo/circularprogress"
 	"github.com/golangee/forms-example/demo/dialog"
@@ -121,5 +122,6 @@ func (a *App) Start() {
 	a.Route(circularprogress.Path, a.WithDrawer(circularprogress.FromQuery))
 	a.Route(snackbar.Path, a.WithDrawer(snackbar.FromQuery))
 	a.Route(smallcontent.Path, a.WithDrawer(smallcontent.FromQuery))
+	a.Route(card.Path, a.WithDrawer(card.FromQuery))
 	a.Application.Start()
 }
