@@ -14,30 +14,34 @@ func init() {
 	// from strings-de-DE.xml
 	tag = "de-DE"
 
-	i18n.ImportValue(i18n.NewQuantityText(tag, "x_has_y_cats").One("%[1]s has %[2]d cat").Other("the owner of %[2]d cats is %[1]s").Other("the owner of %[2]d cats is %[1]s"))
+	i18n.ImportValue(i18n.NewText(tag, "demo_i18n_active_locale", "Aktive Sprace: %s"))
+	i18n.ImportValue(i18n.NewText(tag, "demo_i18n_browser_locale", "browser Sprache: %s"))
+	i18n.ImportValue(i18n.NewText(tag, "demo_i18n_caption", "Lokalisierung"))
+	i18n.ImportValue(i18n.NewText(tag, "demo_i18n_select_language", "Sprache wählen"))
+	i18n.ImportValue(i18n.NewText(tag, "demo_i18n_text", "Dies ist kein Kernmerkmal der Formulare selbst, sondern aus dem Modul ee/i18n. Die Verwendung des Einbettungscodegenerators macht alles typsicher, erfordert aber Platz in Wasm-Binär und Speicher. Es wird empfohlen, nur eine Basissprache zu verwenden und zur Laufzeit eine einheitliche Übersetzungsdatei zu laden."))
 	i18n.ImportValue(i18n.NewText(tag, "hello_world", "Hallo Welt"))
-	i18n.ImportValue(i18n.NewText(tag, "bad_0", "@ ? < & ' \" \" '"))
-	i18n.ImportValue(i18n.NewText(tag, "x_runs_around_Y_and_sings_z", "%[1]s runs around the %[2]s and sings %[3]s"))
-	i18n.ImportValue(i18n.NewText(tag, "bad_1", "hallo '"))
-	i18n.ImportValue(i18n.NewQuantityText(tag, "x_has_y_cats2").One("%[1]s hat %[2]d Katze").Other("der besitzer von %[2]d katzen is %[1]s").Other("der besitzer von %[2]d katzen is %[1]s"))
-	i18n.ImportValue(i18n.NewTextArray(tag, "selector_details_array", "first line", "second line", "third line", "fourth line"))
-	i18n.ImportValue(i18n.NewTextArray(tag, "selector_details_array2", "a", "b", "c", "d"))
-	i18n.ImportValue(i18n.NewText(tag, "app_name", "LeichteApp"))
 	i18n.ImportValue(i18n.NewText(tag, "hello_x", "Hallo %s"))
+	i18n.ImportValue(i18n.NewText(tag, "locale", "de-DE"))
+	i18n.ImportValue(i18n.NewTextArray(tag, "selector_details_array", "Erste Zeile", "Zweite Zeile", "Dritte Zeile", "Vierte"))
+	i18n.ImportValue(i18n.NewQuantityText(tag, "x_cats").One("Eine Katze").Other("%[1]d Katzen"))
+	i18n.ImportValue(i18n.NewText(tag, "x_runs_around_Y_and_sings_z", " %[3]s wird gesungen von %[1]s, der um %[2]s herumläuft"))
+	_ = tag
 
-	// from strings.xml
-	tag = "und"
+	// from strings-en.xml
+	tag = "en"
 
-	i18n.ImportValue(i18n.NewQuantityText(tag, "x_has_y_cats").One("%[1]s has %[2]d cat").Other("the owner of %[2]d cats is %[1]s").Other("the owner of %[2]d cats is %[1]s"))
-	i18n.ImportValue(i18n.NewTextArray(tag, "selector_details_array2", "a", "b", "c", "d"))
-	i18n.ImportValue(i18n.NewText(tag, "app_name", "LeichteApp"))
-	i18n.ImportValue(i18n.NewText(tag, "hello_world", "Hallo Welt"))
+	i18n.ImportValue(i18n.NewText(tag, "demo_i18n_active_locale", "active locale: %s"))
+	i18n.ImportValue(i18n.NewText(tag, "demo_i18n_browser_locale", "browser locale: %s"))
+	i18n.ImportValue(i18n.NewText(tag, "demo_i18n_caption", "Localisation"))
+	i18n.ImportValue(i18n.NewText(tag, "demo_i18n_select_language", "select language"))
+	i18n.ImportValue(i18n.NewText(tag, "demo_i18n_text", "This is not a core feature by forms itself, but from the ee/i18n module. Using the embedding code generator, makes everything typesafe but requires space in wasm binary and memory. The recommendation is to just use a base language and load a unified translation file at runtime."))
+	i18n.ImportValue(i18n.NewText(tag, "hello_world", "hello world"))
 	i18n.ImportValue(i18n.NewText(tag, "hello_x", "Hello %s"))
-	i18n.ImportValue(i18n.NewText(tag, "x_runs_around_Y_and_sings_z", "%[1]s runs around the %[2]s and sings %[3]s"))
-	i18n.ImportValue(i18n.NewText(tag, "bad_0", "@ ? < & ' \" \" '"))
-	i18n.ImportValue(i18n.NewText(tag, "bad_1", "hallo '"))
-	i18n.ImportValue(i18n.NewQuantityText(tag, "x_has_y_cats2").One("%[1]s has %[2]d cat2").Other("the owner of %[2]d cats2 is %[1]s").Other("the owner of %[2]d cats2 is %[1]s"))
+	i18n.ImportValue(i18n.NewText(tag, "locale", "en"))
 	i18n.ImportValue(i18n.NewTextArray(tag, "selector_details_array", "first line", "second line", "third line", "fourth line"))
+	i18n.ImportValue(i18n.NewQuantityText(tag, "x_cats").One("One cat").Other("%[1]d cats"))
+	i18n.ImportValue(i18n.NewText(tag, "x_runs_around_Y_and_sings_z", "%[1]s runs around the %[2]s and sings %[3]s"))
+	_ = tag
 
 }
 
@@ -51,34 +55,52 @@ func NewResources(locale string) Resources {
 	return Resources{i18n.From(locale)}
 }
 
-// AppName returns a translated text for "LeichteApp"
-func (r Resources) AppName() string {
-	str, err := r.res.Text("app_name")
+// DemoI18NActiveLocale returns a translated text for "active locale: %s"
+func (r Resources) DemoI18NActiveLocale(str0 string) string {
+	str, err := r.res.Text("demo_i18n_active_locale", str0)
 	if err != nil {
-		return fmt.Errorf("MISS!app_name: %w", err).Error()
+		return fmt.Errorf("MISS!demo_i18n_active_locale: %w", err).Error()
 	}
 	return str
 }
 
-// Bad0 returns a translated text for "@ ? < & ' " " '"
-func (r Resources) Bad0() string {
-	str, err := r.res.Text("bad_0")
+// DemoI18NBrowserLocale returns a translated text for "browser locale: %s"
+func (r Resources) DemoI18NBrowserLocale(str0 string) string {
+	str, err := r.res.Text("demo_i18n_browser_locale", str0)
 	if err != nil {
-		return fmt.Errorf("MISS!bad_0: %w", err).Error()
+		return fmt.Errorf("MISS!demo_i18n_browser_locale: %w", err).Error()
 	}
 	return str
 }
 
-// Bad1 returns a translated text for "hallo '"
-func (r Resources) Bad1() string {
-	str, err := r.res.Text("bad_1")
+// DemoI18NCaption returns a translated text for "Localisation"
+func (r Resources) DemoI18NCaption() string {
+	str, err := r.res.Text("demo_i18n_caption")
 	if err != nil {
-		return fmt.Errorf("MISS!bad_1: %w", err).Error()
+		return fmt.Errorf("MISS!demo_i18n_caption: %w", err).Error()
 	}
 	return str
 }
 
-// HelloWorld returns a translated text for "Hallo Welt"
+// DemoI18NSelectLanguage returns a translated text for "select language"
+func (r Resources) DemoI18NSelectLanguage() string {
+	str, err := r.res.Text("demo_i18n_select_language")
+	if err != nil {
+		return fmt.Errorf("MISS!demo_i18n_select_language: %w", err).Error()
+	}
+	return str
+}
+
+// DemoI18NText returns a translated text for "This is not a core feature by forms itself, but from the ee/i18n module. Using the embedding code generator, makes everything typesafe but requires space in wasm binary and memory. The recommendation is to just use a base language and load a unified translation file at runtime."
+func (r Resources) DemoI18NText() string {
+	str, err := r.res.Text("demo_i18n_text")
+	if err != nil {
+		return fmt.Errorf("MISS!demo_i18n_text: %w", err).Error()
+	}
+	return str
+}
+
+// HelloWorld returns a translated text for "hello world"
 func (r Resources) HelloWorld() string {
 	str, err := r.res.Text("hello_world")
 	if err != nil {
@@ -96,6 +118,15 @@ func (r Resources) HelloX(str0 string) string {
 	return str
 }
 
+// Locale returns a translated text for "en"
+func (r Resources) Locale() string {
+	str, err := r.res.Text("locale")
+	if err != nil {
+		return fmt.Errorf("MISS!locale: %w", err).Error()
+	}
+	return str
+}
+
 // SelectorDetailsArray returns a translated text for "first line"
 func (r Resources) SelectorDetailsArray() []string {
 	str, err := r.res.TextArray("selector_details_array")
@@ -105,29 +136,11 @@ func (r Resources) SelectorDetailsArray() []string {
 	return str
 }
 
-// SelectorDetailsArray2 returns a translated text for "a"
-func (r Resources) SelectorDetailsArray2() []string {
-	str, err := r.res.TextArray("selector_details_array2")
+// XCats returns a translated text for "%[1]d cats"
+func (r Resources) XCats(quantity int, num0 int) string {
+	str, err := r.res.QuantityText("x_cats", quantity, num0)
 	if err != nil {
-		return []string{fmt.Errorf("MISS!selector_details_array2: %w", err).Error()}
-	}
-	return str
-}
-
-// XHasYCats returns a translated text for "the owner of %[2]d cats is %[1]s"
-func (r Resources) XHasYCats(quantity int, str0 string, num1 int) string {
-	str, err := r.res.QuantityText("x_has_y_cats", quantity, str0, num1)
-	if err != nil {
-		return fmt.Errorf("MISS!x_has_y_cats: %w", err).Error()
-	}
-	return str
-}
-
-// XHasYCats2 returns a translated text for "the owner of %[2]d cats2 is %[1]s"
-func (r Resources) XHasYCats2(quantity int, str0 string, num1 int) string {
-	str, err := r.res.QuantityText("x_has_y_cats2", quantity, str0, num1)
-	if err != nil {
-		return fmt.Errorf("MISS!x_has_y_cats2: %w", err).Error()
+		return fmt.Errorf("MISS!x_cats: %w", err).Error()
 	}
 	return str
 }
@@ -144,15 +157,16 @@ func (r Resources) XRunsAroundYAndSingsZ(str0 string, str1 string, str2 string) 
 // FuncMap returns the named functions to be used with a template
 func (r Resources) FuncMap() map[string]interface{} {
 	m := make(map[string]interface{})
-	m["AppName"] = r.AppName
-	m["Bad0"] = r.Bad0
-	m["Bad1"] = r.Bad1
+	m["DemoI18NActiveLocale"] = r.DemoI18NActiveLocale
+	m["DemoI18NBrowserLocale"] = r.DemoI18NBrowserLocale
+	m["DemoI18NCaption"] = r.DemoI18NCaption
+	m["DemoI18NSelectLanguage"] = r.DemoI18NSelectLanguage
+	m["DemoI18NText"] = r.DemoI18NText
 	m["HelloWorld"] = r.HelloWorld
 	m["HelloX"] = r.HelloX
+	m["Locale"] = r.Locale
 	m["SelectorDetailsArray"] = r.SelectorDetailsArray
-	m["SelectorDetailsArray2"] = r.SelectorDetailsArray2
-	m["XHasYCats"] = r.XHasYCats
-	m["XHasYCats2"] = r.XHasYCats2
+	m["XCats"] = r.XCats
 	m["XRunsAroundYAndSingsZ"] = r.XRunsAroundYAndSingsZ
 	return m
 }

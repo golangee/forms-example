@@ -16,6 +16,8 @@ package i18n
 
 import (
 	. "github.com/golangee/forms"
+	"github.com/golangee/forms/locale"
+	"github.com/golangee/i18n"
 )
 
 const Path = "/demo/i18n"
@@ -26,18 +28,28 @@ type ContentView struct {
 }
 
 func NewContentView() *ContentView {
+	res := NewResources(locale.Language())
+
 	view := &ContentView{VStack: NewVStack()}
 	view.VStack.AddViews(
-		NewText("Localization").Style(Font(Headline1)),
-		NewText("This is not a core feature by forms itself, but from the ee/i18n module. "+
-			"Using the embedding code generator, makes everything typesafe but requires space in wasm binary and "+
-			"memory. The recommendation is to just use a base language and load a unified translation file at "+
-			"runtime.").Style(Font(Body), Repel()),
+		NewText(res.DemoI18NCaption()).Style(Font(Headline1)),
+		NewText(res.DemoI18NText()).Style(Font(Body), Repel()),
 
-		NewText(NewResources(view.Context().Languages()[0]).HelloWorld()),
-		NewText(NewResources(view.Context().Languages()[0]).XHasYCats2(1, "Peter", 1)),
-		NewText(NewResources(view.Context().Languages()[0]).XHasYCats2(2, "Peter", 2)),
-		NewText(NewResources(view.Context().Languages()[0]).HelloX("dude")).Style(Repel()),
+		NewText(res.DemoI18NBrowserLocale(locale.Language())),
+		NewText(res.DemoI18NActiveLocale(res.Locale())).Style(Repel()),
+		NewPicker().
+			SetLabel(res.DemoI18NSelectLanguage()).
+			SetOptions(i18n.Locales()...).
+			SetSelectedString(locale.Language()).
+			SetSelectListener(func(v *Picker) {
+				locale.SetLanguages(v.SelectedString())
+				v.Context().Invalidate()
+			}),
+
+		NewText(res.HelloWorld()),
+		NewText(res.HelloX("Dude")),
+		NewText(res.XCats(1, 1)),
+		NewText(res.XCats(5, 5)),
 
 		NewCode(GoSyntax, code),
 	)
@@ -48,13 +60,15 @@ func FromQuery(Query) View {
 	return NewContentView()
 }
 
-const code = `package link
+const code = `package i18n
 
 import (
 	. "github.com/golangee/forms"
+	"github.com/golangee/forms/locale"
+	"github.com/golangee/i18n"
 )
 
-const Path = "/demo/link"
+const Path = "/demo/i18n"
 
 type ContentView struct {
 	*VStack
@@ -62,15 +76,28 @@ type ContentView struct {
 }
 
 func NewContentView() *ContentView {
-	view := &ContentView{}
-	view.VStack = NewVStack().AddViews(
-		NewText("Link").Style(Font(Headline1)),
-		NewText("A simple inline link "+
-			" for text based non-button and non-icon navigation.").Style(Font(Body)),
-		NewGroup(
-			NewText("hello "),
-			NewLink("world", "http://www.worldiety.de").SetTarget(TargetBlank),
-		),
+	res := NewResources(locale.Language())
+
+	view := &ContentView{VStack: NewVStack()}
+	view.VStack.AddViews(
+		NewText(res.DemoI18NCaption()).Style(Font(Headline1)),
+		NewText(res.DemoI18NText()).Style(Font(Body), Repel()),
+
+		NewText(res.DemoI18NBrowserLocale(locale.Language())),
+		NewText(res.DemoI18NActiveLocale(res.Locale())).Style(Repel()),
+		NewPicker().
+			SetLabel(res.DemoI18NSelectLanguage()).
+			SetOptions(i18n.Locales()...).
+			SetSelectedString(locale.Language()).
+			SetSelectListener(func(v *Picker) {
+				locale.SetLanguages(v.SelectedString())
+				v.Context().Invalidate()
+			}),
+
+		NewText(res.HelloWorld()),
+		NewText(res.HelloX("Dude")),
+		NewText(res.XCats(1, 1)),
+		NewText(res.XCats(5, 5)),
 
 		NewCode(GoSyntax, code),
 	)
