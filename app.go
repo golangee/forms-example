@@ -23,6 +23,8 @@ import (
 	"github.com/golangee/forms-example/demo/circularprogress"
 	"github.com/golangee/forms-example/demo/dialog"
 	"github.com/golangee/forms-example/demo/drawer"
+	"github.com/golangee/forms-example/demo/grid"
+	"github.com/golangee/forms-example/demo/hstack"
 	"github.com/golangee/forms-example/demo/i18n"
 	"github.com/golangee/forms-example/demo/index"
 	"github.com/golangee/forms-example/demo/linearprogress"
@@ -40,6 +42,7 @@ import (
 	"github.com/golangee/forms-example/demo/theme"
 	"github.com/golangee/forms-example/demo/topappbar"
 	"github.com/golangee/forms-example/demo/typography"
+	"github.com/golangee/forms-example/demo/vstack"
 	"github.com/golangee/forms/theme/material/icon"
 	"path/filepath"
 	"time"
@@ -125,5 +128,8 @@ func (a *App) Start() {
 	a.Route(smallcontent.Path, a.WithDrawer(smallcontent.FromQuery))
 	a.Route(card.Path, a.WithDrawer(card.FromQuery))
 	a.Route(i18n.Path, a.WithDrawer(i18n.FromQuery))
+	a.Route(grid.Path, a.WithDrawer(grid.FromQuery))
+	a.Route(vstack.Path, a.WithDrawer(vstack.FromQuery))
+	a.Route(hstack.Path, a.WithDrawer(hstack.FromQuery))
 	a.Application.Start()
 }
