@@ -35,7 +35,7 @@ func NewContentView() *ContentView {
 			NewText("b").Style(BackgroundColor(Blue50)),
 			NewText("c").Style(BackgroundColor(Yellow50)),
 			NewText("d").Style(BackgroundColor(Green50)),
-		).Style(BackgroundColor(BlueGray50), Padding()).SetGap(Pixel(DefaultPadding)),
+		).Style(BackgroundColor(BlueGray50), Padding()).SetGap(DefaultPadding),
 		NewCode(GoSyntax, code),
 	)
 	return view
@@ -68,7 +68,7 @@ func NewContentView() *ContentView {
 			NewText("b").Style(BackgroundColor(Blue50)),
 			NewText("c").Style(BackgroundColor(Yellow50)),
 			NewText("d").Style(BackgroundColor(Green50)),
-		).Style(BackgroundColor(BlueGray50), Padding()).SetGap(Pixel(DefaultPadding)),
+		).Style(BackgroundColor(BlueGray50), Padding()).SetGap(DefaultPadding),
 		NewCode(GoSyntax, code),
 	)
 	return view

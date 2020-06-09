@@ -41,7 +41,7 @@ func NewContentView() *ContentView {
 			AddView(NewText("main").Style(BackgroundColor(Yellow50)), GridLayoutParams{Area: "main"}).
 			AddView(NewText("footer").Style(BackgroundColor(Green50)), GridLayoutParams{Area: "footer"}).
 			Style(BackgroundColor(BlueGray50),Padding()).
-			SetGap(Pixel(DefaultPadding)),
+			SetGap(DefaultPadding),
 		NewCode(GoSyntax, code),
 	)
 	return view
@@ -80,7 +80,7 @@ func NewContentView() *ContentView {
 			AddView(NewText("main").Style(BackgroundColor(Yellow50)), GridLayoutParams{Area: "main"}).
 			AddView(NewText("footer").Style(BackgroundColor(Green50)), GridLayoutParams{Area: "footer"}).
 			Style(BackgroundColor(BlueGray50),Padding()).
-			SetGap(Pixel(DefaultPadding)),
+			SetGap(DefaultPadding),
 		NewCode(GoSyntax, code),
 	)
 	return view

@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package hstack
+package hstepper
 
 import (
 	. "github.com/golangee/forms"
+	"github.com/golangee/forms/theme/material/icon"
+	. "github.com/golangee/forms/views/hstepper"
 )
 
-const Path = "/demo/hstack"
+const Path = "/demo/horizontalstepper"
 
 type ContentView struct {
 	*VStack
@@ -27,15 +29,18 @@ type ContentView struct {
 func NewContentView() *ContentView {
 	view := &ContentView{}
 	view.VStack = NewVStack().AddViews(
-		NewText("HStack").Style(Font(Headline1)),
-		NewText("HStack or horizontal stack is a single row grid.").Style(Font(Body)),
+		NewText("horizontal stepper").Style(Font(Headline1)),
+		NewText("A stepper visualizes the progress through a sequence "+
+			"of logical and (numbered) steps or navigation in "+
+			"assistants.").Style(Font(Body)),
 
-		NewHStack(
-			NewText("a").Style(BackgroundColor(Red50)),
-			NewText("b").Style(BackgroundColor(Blue50)),
-			NewText("c").Style(BackgroundColor(Yellow50)),
-			NewText("d").Style(BackgroundColor(Green50)),
-		).Style(BackgroundColor(BlueGray50), Padding()).SetGap(DefaultPadding),
+		NewStepper(
+			NewIconStep(icon.Assignment, "Step 1"),
+			NewIconStep(icon.Storage, "Step 2"),
+			NewIconStep(icon.Folder, "Step 3"),
+			NewStep("last step"),
+		).SetProgress(2).Style(Repel()),
+
 		NewCode(GoSyntax, code),
 	)
 	return view

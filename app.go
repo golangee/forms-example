@@ -25,6 +25,7 @@ import (
 	"github.com/golangee/forms-example/demo/drawer"
 	"github.com/golangee/forms-example/demo/grid"
 	"github.com/golangee/forms-example/demo/hstack"
+	"github.com/golangee/forms-example/demo/hstepper"
 	"github.com/golangee/forms-example/demo/i18n"
 	"github.com/golangee/forms-example/demo/index"
 	"github.com/golangee/forms-example/demo/linearprogress"
@@ -131,5 +132,6 @@ func (a *App) Start() {
 	a.Route(grid.Path, a.WithDrawer(grid.FromQuery))
 	a.Route(vstack.Path, a.WithDrawer(vstack.FromQuery))
 	a.Route(hstack.Path, a.WithDrawer(hstack.FromQuery))
+	a.Route(hstepper.Path, a.WithDrawer(hstepper.FromQuery))
 	a.Application.Start()
 }

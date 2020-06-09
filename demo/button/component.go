@@ -56,6 +56,12 @@ func NewContentView() *ContentView {
 				v.(*Button).SetEnabled(false).SetText("disabled")
 			}).
 			Style(Margin()),
+		NewIconButton(icon.Add),
+		NewIconButton(icon.Add).Style(
+			BackgroundColor(Theme().Color()),
+			ForegroundColor(Theme().ForegroundColor()),
+		),
+		NewIconButton(icon.Add).SetChar('1'),
 		NewCode(GoSyntax, code),
 	)}
 }
@@ -79,7 +85,7 @@ type ContentView struct {
 
 func NewContentView() *ContentView {
 	return &ContentView{VStack: NewVStack().AddViews(
-		NewText("button demo").Style(Font(Title)),
+		NewText("buttons").Style(Font(Headline1)),
 		NewText("Buttons are used to allow users to make actions. Here we show how"+
 			" to use them in different styles and with trailing and leading icons.").Style(Font(Body)),
 		NewButton("default button").
@@ -108,6 +114,12 @@ func NewContentView() *ContentView {
 				v.(*Button).SetEnabled(false).SetText("disabled")
 			}).
 			Style(Margin()),
-		NewCode(code),
+		NewIconButton(icon.Add),
+		NewIconButton(icon.Add).Style(
+			BackgroundColor(Theme().Color()),
+			ForegroundColor(Theme().ForegroundColor()),
+		),
+		NewIconButton(icon.Add).SetChar('1'),
+		NewCode(GoSyntax, code),
 	)}
 }`

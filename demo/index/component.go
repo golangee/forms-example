@@ -26,7 +26,7 @@ type ContentView struct {
 
 func NewContentView() *ContentView {
 	return &ContentView{VStack: NewVStack().AddViews(
-		NewText("wtk").Style(Font(Headline1)).Style(PadBottom(8)),
+		NewText("wtk").Style(Font(Headline1)).Style(PadBottom(DefaultPadding)),
 		NewText("welcome to the wtk demo and kitchen sink. Here you can see "+
 			"a selected amount of use cases and components of the worldiety web toolkit "+
 			"for go and wasm. It should feel a bit like SwiftUI but for Go.").Style(Font(Body)),
