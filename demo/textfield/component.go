@@ -38,8 +38,7 @@ func NewContentView() *ContentView {
 
 		NewText("Default full width"),
 		NewTextField().
-			InputStyle(Width(Percent(100))).
-			Style(Repel()),
+			Style(Width(Percent(100)), Repel()),
 
 		NewText("Password"),
 		NewTextField().
