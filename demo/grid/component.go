@@ -40,8 +40,21 @@ func NewContentView() *ContentView {
 			AddView(NewText("menu").Style(BackgroundColor(Blue50)), GridLayoutParams{Area: "menu"}).
 			AddView(NewText("main").Style(BackgroundColor(Yellow50)), GridLayoutParams{Area: "main"}).
 			AddView(NewText("footer").Style(BackgroundColor(Green50)), GridLayoutParams{Area: "footer"}).
-			Style(BackgroundColor(BlueGray50),Padding()).
+			Style(BackgroundColor(BlueGray50), Padding(), Repel()).
 			SetGap(DefaultPadding),
+
+		NewText("Example with automatic and fractional column width:").Style(Font(Body)),
+		NewGrid().AddViews(
+			NewText("left - wrap content (auto)").
+				Style(BackgroundColor(Red50)),
+			NewText("mid - match parent (1fr)").
+				Style(BackgroundColor(Gray50)),
+			NewText("right - wrap content (auto)").
+				Style(BackgroundColor(Brown50)),
+		).SetColumnWidths(Auto(), Fraction(1), Auto()).
+			Style(BackgroundColor(BlueGray50), Padding()).
+			SetGap(DefaultPadding),
+
 		NewCode(GoSyntax, code),
 	)
 	return view
@@ -79,8 +92,21 @@ func NewContentView() *ContentView {
 			AddView(NewText("menu").Style(BackgroundColor(Blue50)), GridLayoutParams{Area: "menu"}).
 			AddView(NewText("main").Style(BackgroundColor(Yellow50)), GridLayoutParams{Area: "main"}).
 			AddView(NewText("footer").Style(BackgroundColor(Green50)), GridLayoutParams{Area: "footer"}).
-			Style(BackgroundColor(BlueGray50),Padding()).
+			Style(BackgroundColor(BlueGray50), Padding(), Repel()).
 			SetGap(DefaultPadding),
+
+		NewText("Example with automatic and fractional column width:").Style(Font(Body)),
+		NewGrid().AddViews(
+			NewText("left - wrap content (auto)").
+				Style(BackgroundColor(Red50)),
+			NewText("mid - match parent (1fr)").
+				Style(BackgroundColor(Blue50)),
+			NewText("right - wrap content (auto)").
+				Style(BackgroundColor(Yellow50)),
+		).SetColumnWidths(Auto(), Fraction(1), Auto()).
+			Style(BackgroundColor(BlueGray50), Padding()).
+			SetGap(DefaultPadding),
+
 		NewCode(GoSyntax, code),
 	)
 	return view
