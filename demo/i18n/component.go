@@ -40,9 +40,9 @@ func NewContentView() *ContentView {
 		NewPicker().
 			SetLabel(res.DemoI18NSelectLanguage()).
 			SetOptions(i18n.Locales()...).
-			SetSelectedString(locale.Language()).
+			SetText(locale.Language()).
 			SetSelectListener(func(v *Picker) {
-				locale.SetLanguages(v.SelectedString())
+				locale.SetLanguages(v.Text())
 				v.Context().Invalidate()
 			}),
 
