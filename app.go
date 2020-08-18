@@ -17,6 +17,7 @@ package example
 import (
 	. "github.com/golangee/forms"
 	"github.com/golangee/forms-example/build"
+	"github.com/golangee/forms-example/demo/autocomplete"
 	"github.com/golangee/forms-example/demo/button"
 	"github.com/golangee/forms-example/demo/card"
 	"github.com/golangee/forms-example/demo/checkbox"
@@ -133,5 +134,6 @@ func (a *App) Start() {
 	a.Route(vstack.Path, a.WithDrawer(vstack.FromQuery))
 	a.Route(hstack.Path, a.WithDrawer(hstack.FromQuery))
 	a.Route(hstepper.Path, a.WithDrawer(hstepper.FromQuery))
+	a.Route(autocomplete.Path, a.WithDrawer(autocomplete.FromQuery))
 	a.Application.Start()
 }
