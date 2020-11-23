@@ -53,7 +53,10 @@ func NewWatcher(root string, onNotifyCallback func()) (*Watcher, error) {
 					return
 				}
 
-				w.logger.Print(ecs.Msg(event.String()))
+				if log.Debug {
+					w.logger.Print(ecs.Msg(event.String()))
+				}
+
 				if event.Op&fsnotify.Create == fsnotify.Create {
 					if stat, err := os.Stat(event.Name); err == nil {
 						if stat.IsDir() {
@@ -99,7 +102,6 @@ func (w *Watcher) checkLater() {
 		actualGen := atomic.LoadInt64(&w.lastMod)
 
 		if myGen != actualGen {
-			w.logger.Print(ecs.Msg("logger ignore"))
 			return
 		}
 
@@ -108,10 +110,10 @@ func (w *Watcher) checkLater() {
 			if err := w.updateRecursiveWatch(w.dir); err != nil {
 				w.logger.Print(ecs.Msg("unable to update recursive watch"), ecs.ErrMsg(err))
 			}
+		}
 
-			if w.onNotify != nil {
-				w.onNotify()
-			}
+		if w.onNotify != nil {
+			w.onNotify()
 		}
 	})
 }
@@ -121,6 +123,8 @@ func (w *Watcher) checkLater() {
 func (w *Watcher) updateRecursiveWatch(root string) error {
 	w.watchedDirLock.Lock()
 	defer w.watchedDirLock.Unlock()
+
+	atomic.StoreInt64(&w.lastModRebuild, 0)
 
 	for _, directory := range w.watchedDirectories {
 		_ = w.fsw.Remove(directory)

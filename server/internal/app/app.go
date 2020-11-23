@@ -1,7 +1,9 @@
 package app
 
 import (
+	"errors"
 	"fmt"
+	builder2 "github.com/golangee/forms-example/server/internal/builder"
 	"github.com/golangee/forms-example/server/internal/http"
 	"github.com/golangee/forms-example/server/internal/livebuilder"
 	"github.com/golangee/log"
@@ -39,7 +41,12 @@ func NewApplication(host string, port int, wwwDir string) (*Application, error) 
 	}
 	a.builder = builder
 	if err := a.builder.Build(); err != nil {
-		return nil, fmt.Errorf("unable to create initial build: %w", err)
+		buildErr := builder2.BuildErr{}
+		if errors.As(err, &buildErr) {
+			a.logger.Print(ecs.ErrMsg(err))
+		} else {
+			return nil, fmt.Errorf("unable to create initial build: %w", err)
+		}
 	}
 
 	return a, nil

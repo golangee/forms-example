@@ -1,12 +1,22 @@
 package builder
 
 import (
+	"bytes"
+	"fmt"
 	"io/ioutil"
 	"os"
+	"text/template"
 )
 
+type IndexData struct {
+	WasmVersion       string
+	WasmBridgeVersion string
+	Body string
+}
+
 // BuildIndex writes an HTML index page for WASM into the dstFile.
-func BuildIndex(dstFile string) error {
+func BuildIndex(dstFile string, indexData IndexData) error {
+
 	const html = `<html >
 <head>
     <meta http-equiv="Pragma" content="no-cache">
@@ -18,14 +28,14 @@ func BuildIndex(dstFile string) error {
     <link rel="stylesheet" type="text/css" href="/material/material-components-web.min.css">
     <link rel="stylesheet" type="text/css" href="/material/wtk.css">
 
-    <script src="wasm_exec.js"></script>
+    <script src="wasm_exec.js?v={{.WasmBridgeVersion}}"></script>
     <script>
         const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
         const go = new Go();
 
         if (isSafari) {
-            fetch('app.wasm').then(response =>
+            fetch('app.wasm?v={{.WasmVersion}}').then(response =>
                 response.arrayBuffer()
             ).then(bytes =>
                 WebAssembly.instantiate(bytes, go.importObject)
@@ -42,21 +52,21 @@ func BuildIndex(dstFile string) error {
      <script type="text/javascript" src="/material/material-components-web.js"></script>
 </head>
 <body>
-<div id="content" class="content">
-    <div style="text-align: center;">
-        <div class="lds-ring">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-        <br/>
-        Bitte warten...
-    </div>
-
+{{.Body}}
 </div>
 </body>
 </html>
 `
-	return ioutil.WriteFile(dstFile, []byte(html), os.ModePerm)
+
+	tpl, err := template.New("index.html").Parse(html)
+	if err != nil {
+		return fmt.Errorf("unable to parse html template: %w", err)
+	}
+
+	buf := &bytes.Buffer{}
+	if err := tpl.Execute(buf, indexData); err != nil {
+		return fmt.Errorf("unable to apply index template: %w", err)
+	}
+
+	return ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm)
 }

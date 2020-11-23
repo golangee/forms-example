@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"encoding/hex"
 	"fmt"
 	"io"
 	"os"
@@ -15,6 +16,18 @@ const (
 	wasmBridgeFilename = "wasm_exec.js"
 	indexHtml          = "index.html"
 )
+
+type BuildErr struct {
+	delegate error
+}
+
+func (b BuildErr) Error() string {
+	return b.delegate.Error()
+}
+
+func (b BuildErr) Unwrap() error {
+	return b.delegate
+}
 
 // GoBuildWasm builds an idiomatic wasm go module. The wasm main entry point must be defined at cmd/wasm. The
 // output file is forwarded.
@@ -172,8 +185,9 @@ func CopyFile(dst, src string) error {
 
 // BuildProject builds an entire golangee wasm project from src to dst.
 func BuildProject(srcDir, dstDir string) error {
-	if err := GoBuildWasm(srcDir, filepath.Join(dstDir, wasmFilename)); err != nil {
-		return fmt.Errorf("unable to build wasm: %w", err)
+	wasmHash, err := HashFileTree(srcDir)
+	if err != nil {
+		return fmt.Errorf("unable to calculate hash version: %w", err)
 	}
 
 	goRoot, err := GoEnv("GOROOT")
@@ -185,8 +199,29 @@ func BuildProject(srcDir, dstDir string) error {
 		return fmt.Errorf("unable to provide wasm-js-bridge: %w", err)
 	}
 
-	if err := BuildIndex(filepath.Join(dstDir, indexHtml)); err != nil {
+	bridgeHash, err := HashFile(filepath.Join(goRoot, goRootJsBridge))
+	if err != nil {
+		return fmt.Errorf("unable to hash bridge js: %w", err)
+	}
+
+	idxDat := IndexData{
+		WasmVersion:       hex.EncodeToString(wasmHash),
+		WasmBridgeVersion: hex.EncodeToString(bridgeHash),
+	}
+
+	buildErr := GoBuildWasm(srcDir, filepath.Join(dstDir, wasmFilename))
+
+	if buildErr != nil {
+		idxDat.Body = strings.Join(strings.Split(buildErr.Error(), "\n"), "<br/>")
+
+	}
+
+	if err := BuildIndex(filepath.Join(dstDir, indexHtml), idxDat); err != nil {
 		return fmt.Errorf("unable to create index html: %w", err)
+	}
+
+	if buildErr != nil {
+		return BuildErr{buildErr}
 	}
 
 	return nil

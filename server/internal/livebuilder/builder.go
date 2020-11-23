@@ -1,6 +1,7 @@
 package livebuilder
 
 import (
+	"bytes"
 	"encoding/hex"
 	"fmt"
 	"github.com/golangee/forms-example/server/internal/builder"
@@ -14,12 +15,11 @@ import (
 // Builder provides an automatic live builder which rebuilds an idiomatic golangee wasm project any time it
 // recognizes a change.
 type Builder struct {
-	schedulerStopChan chan bool
-	logger            log.Logger
-	lastBuildHash     []byte
-	srcDir, dstDir    string
-	buildLock         sync.Mutex
-	watcher           *fsnotify.Watcher
+	logger         log.Logger
+	lastBuildHash  []byte
+	srcDir, dstDir string
+	buildLock      sync.Mutex
+	watcher        *fsnotify.Watcher
 }
 
 func NewBuilder(dstDir, srcDir string) (*Builder, error) {
@@ -30,31 +30,25 @@ func NewBuilder(dstDir, srcDir string) (*Builder, error) {
 
 	b.logger = log.NewLogger(ecs.Log("livebuilder"))
 
-	// TODO polling is a bad thing, implement inotify et al
-	/*	b.schedulerStopChan = scheduleDelayed(10*time.Second, func() {
-			hash, err := builder.HashFileTree(srcDir)
-			if err != nil {
-				b.logger.Print(ecs.Msg("failed to calculate file tree hash"), ecs.ErrMsg(err))
+	w, err := fsnotify.NewWatcher(srcDir, func() {
+		hash, err := builder.HashFileTree(srcDir)
+		if err != nil {
+			b.logger.Print(ecs.Msg("failed to calculate file tree hash"), ecs.ErrMsg(err))
+			return
+		}
+
+		b.buildLock.Lock()
+		hashCopy := append([]byte{}, b.lastBuildHash...)
+		b.buildLock.Unlock()
+
+		if bytes.Compare(hashCopy, hash) != 0 {
+			if err := b.Build(); err != nil {
+				b.logger.Print(ecs.Msg("failed to build project"), ecs.ErrMsg(err))
 				return
 			}
-
-			b.buildLock.Lock()
-			hashCopy := append([]byte{}, b.lastBuildHash...)
-			b.buildLock.Unlock()
-
-			if bytes.Compare(hashCopy, hash) != 0 {
-				if err := b.Build(); err != nil {
-					b.logger.Print(ecs.Msg("failed to build project"), ecs.ErrMsg(err))
-					return
-				}
-			}
-
-		})
-
-	*/
-	w, err := fsnotify.NewWatcher(srcDir, func() {
-		b.logger.Print(ecs.Msg("rebuilding..."))
+		}
 	})
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to init fsnotify watcher: %w", err)
 	}
@@ -89,7 +83,5 @@ func (b *Builder) Build() error {
 }
 
 func (b *Builder) Close() error {
-	b.schedulerStopChan <- true
-	close(b.schedulerStopChan)
-	return nil
+	return b.watcher.Close()
 }
