@@ -11,7 +11,8 @@ import (
 type IndexData struct {
 	WasmVersion       string
 	WasmBridgeVersion string
-	Body string
+	Body              string
+	HotReload         bool
 }
 
 // BuildIndex writes an HTML index page for WASM into the dstFile.
@@ -29,6 +30,25 @@ func BuildIndex(dstFile string, indexData IndexData) error {
     <link rel="stylesheet" type="text/css" href="/material/wtk.css">
 
     <script src="wasm_exec.js?v={{.WasmBridgeVersion}}"></script>
+	{{if .HotReload}}
+	<script>
+		function longPoll(){
+			fetch("api/v1/poll/version")
+			.then(res => {
+				document.location.reload(true)
+				setTimeout(longPoll, 100);
+			}).catch(err => {
+					setTimeout(longPoll, 1000);
+					throw err; 
+			});
+
+	
+		}
+
+		longPoll();
+	</script>
+	{{end}}
+
     <script>
         const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 

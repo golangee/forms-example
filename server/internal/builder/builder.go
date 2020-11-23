@@ -207,6 +207,7 @@ func BuildProject(srcDir, dstDir string) error {
 	idxDat := IndexData{
 		WasmVersion:       hex.EncodeToString(wasmHash),
 		WasmBridgeVersion: hex.EncodeToString(bridgeHash),
+		HotReload:         true,
 	}
 
 	buildErr := GoBuildWasm(srcDir, filepath.Join(dstDir, wasmFilename))

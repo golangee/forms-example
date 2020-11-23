@@ -35,7 +35,9 @@ func NewApplication(host string, port int, wwwDir string) (*Application, error) 
 	wwwBuildDir := filepath.Join(tmpDir, "www")
 
 	a.server = http.NewServer(log.WithFields(a.logger, ecs.Log("httpserver")), host, port, wwwBuildDir)
-	builder, err := livebuilder.NewBuilder(wwwBuildDir, wwwDir)
+	builder, err := livebuilder.NewBuilder(wwwBuildDir, wwwDir, func(hash string) {
+		a.server.NotifyChanged(hash)
+	})
 	if err != nil {
 		return nil, err
 	}

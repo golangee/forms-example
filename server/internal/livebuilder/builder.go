@@ -3,6 +3,7 @@ package livebuilder
 import (
 	"bytes"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"github.com/golangee/forms-example/server/internal/builder"
 	"github.com/golangee/forms-example/server/internal/fsnotify"
@@ -20,12 +21,14 @@ type Builder struct {
 	srcDir, dstDir string
 	buildLock      sync.Mutex
 	watcher        *fsnotify.Watcher
+	buildFinished  func(hash string)
 }
 
-func NewBuilder(dstDir, srcDir string) (*Builder, error) {
+func NewBuilder(dstDir, srcDir string, buildFinished func(hash string)) (*Builder, error) {
 	b := &Builder{
-		srcDir: srcDir,
-		dstDir: dstDir,
+		srcDir:        srcDir,
+		dstDir:        dstDir,
+		buildFinished: buildFinished,
 	}
 
 	b.logger = log.NewLogger(ecs.Log("livebuilder"))
@@ -74,12 +77,21 @@ func (b *Builder) Build() error {
 	}
 	b.logger.Print(ecs.Msg("building " + hex.EncodeToString(hash)))
 
-	if err := builder.BuildProject(b.srcDir, b.dstDir); err != nil {
-		return fmt.Errorf("unable to build wasm project: %w", err)
+	err = builder.BuildProject(b.srcDir, b.dstDir)
+	if err != nil {
+		var buildErr builder.BuildErr
+		if !errors.As(err, &buildErr) {
+			return fmt.Errorf("unable to build wasm project: %w", err)
+		}
 	}
 
 	b.lastBuildHash = hash
-	return nil
+
+	if b.buildFinished != nil {
+		b.buildFinished(hex.EncodeToString(hash))
+	}
+
+	return err
 }
 
 func (b *Builder) Close() error {

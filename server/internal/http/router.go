@@ -18,6 +18,7 @@ func (s *Server) newRouter(fileServerDir string) *httprouter.Router {
 	router.HandlerFunc(http.MethodGet, logMe("/blub"), func(writer http.ResponseWriter, request *http.Request) {
 		s.logger.Print(ecs.Msg("hello world"))
 	})
+	router.HandlerFunc(http.MethodGet, logMe("/api/v1/poll/version"), s.pollVersion)
 
 	if fileServerDir != "" {
 		router.NotFound = http.FileServer(http.Dir(logMe(fileServerDir)))

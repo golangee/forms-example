@@ -16,7 +16,6 @@ func NewApplication() *Application {
 	}
 }
 
-
 func (a *Application) Run(){
-	a.logger.Print(ecs.Msg("application is running4"), log.V("build.commit", build.Commit))
+	a.logger.Print(ecs.Msg("application is running14"), log.V("build.commit", build.Commit))
 }
