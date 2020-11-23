@@ -13,6 +13,7 @@ type IndexData struct {
 	WasmBridgeVersion string
 	Body              string
 	HotReload         bool
+	LoadWasm    bool
 }
 
 // BuildIndex writes an HTML index page for WASM into the dstFile.
@@ -26,8 +27,9 @@ func BuildIndex(dstFile string, indexData IndexData) error {
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="stylesheet" type="text/css" href="/material/material-components-web.min.css">
-    <link rel="stylesheet" type="text/css" href="/material/wtk.css">
+
+	<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+	<link href="https://unpkg.com/@tailwindcss/typography@^2/dist/typography.min.css" rel="stylesheet" >
 
     <script src="wasm_exec.js?v={{.WasmBridgeVersion}}"></script>
 	{{if .HotReload}}
@@ -35,20 +37,22 @@ func BuildIndex(dstFile string, indexData IndexData) error {
 		function longPoll(){
 			fetch("api/v1/poll/version")
 			.then(res => {
-				document.location.reload(true)
+				if (res.status == 200){
+					document.location.reload(true)				
+				}
+				
 				setTimeout(longPoll, 100);
 			}).catch(err => {
 					setTimeout(longPoll, 1000);
 					throw err; 
 			});
-
-	
 		}
 
 		longPoll();
 	</script>
 	{{end}}
 
+	{{if .LoadWasm}}
     <script>
         const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
@@ -68,6 +72,8 @@ func BuildIndex(dstFile string, indexData IndexData) error {
             });
         }
     </script>
+	{{end}}
+
      <!-- <script type="text/javascript" src="/material/material-components-web.min.js"></script> -->
      <script type="text/javascript" src="/material/material-components-web.js"></script>
 </head>

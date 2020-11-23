@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
-	"math"
 	"net/http"
 	"time"
 )
@@ -27,7 +26,7 @@ func NewServer(logger log.Logger, host string, port int, dir string) *Server {
 		port:     port,
 		logger:   logger,
 		dir:      dir,
-		awaiting: make(chan chan string, math.MaxInt32),
+		awaiting: make(chan chan string, 10_000), // TODO await will stop working when capacity reached
 	}
 
 	return s
@@ -47,7 +46,7 @@ func (s *Server) NotifyChanged(version string) {
 }
 
 func (s *Server) await() chan string {
-	c := make(chan string)
+	c := make(chan string, 1)
 	s.awaiting <- c
 	return c
 }

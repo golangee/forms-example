@@ -214,7 +214,9 @@ func BuildProject(srcDir, dstDir string) error {
 
 	if buildErr != nil {
 		idxDat.Body = strings.Join(strings.Split(buildErr.Error(), "\n"), "<br/>")
-
+		idxDat.LoadWasm = false
+	} else {
+		idxDat.LoadWasm = true
 	}
 
 	if err := BuildIndex(filepath.Join(dstDir, indexHtml), idxDat); err != nil {

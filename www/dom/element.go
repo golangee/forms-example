@@ -1,0 +1,91 @@
+package dom
+
+import (
+	"github.com/golangee/log"
+	"github.com/golangee/log/ecs"
+	"syscall/js"
+)
+
+const eventRelease = "forms-release"
+
+type Element struct {
+	val js.Value
+}
+
+func newElement(val js.Value) Element {
+	return Element{val}
+}
+
+func (n Element) SetTextContent(v string) Element {
+	n.val.Set("textContent", v)
+	return n
+}
+
+func (n Element) SetClassName(str string) Element {
+	n.val.Set("className", str)
+	return n
+}
+
+func (n Element) AppendElement(aChild Element) Element {
+	n.val.Call("appendChild", aChild.val)
+	return n
+}
+
+func (n Element) Clear() Element {
+	return n.SetTextContent("")
+}
+
+// Set sets the javascript property
+func (n Element) Set(p string, x interface{}) {
+	n.val.Set(p, x)
+}
+
+// AddEventListener is internally very complex, because it keeps a global callback
+// reference to connect the wasm and the javascript context. The wasm side must keep
+// a global un-collectable function and the javascript side does the same. This makes
+// event handling currently very expensive. Always ensure that
+// you call Release on this Element to free all resources.
+func (n Element) AddEventListener(typ string, once bool, listener func(e Element)) Element {
+	alreadyReleased := false
+	var actualFunc, releaseFunc js.Func
+
+	unregisterJS := func() {
+		if !alreadyReleased {
+			alreadyReleased = true
+			n.val.Call("removeEventListener", typ, actualFunc, once)
+			n.val.Call("removeEventListener", eventRelease, releaseFunc, true)
+			actualFunc.Release()
+			releaseFunc.Release()
+		}
+	}
+
+	actualFunc = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		listener(n)
+		if once && !alreadyReleased {
+			unregisterJS()
+		}
+		return nil
+	})
+
+	releaseFunc = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		log.NewLogger().Print(ecs.Msg("func: received release event"))
+		if !alreadyReleased {
+			unregisterJS()
+		}
+		return nil
+	})
+
+	n.val.Call("addEventListener", eventRelease, releaseFunc, true)
+	n.val.Call("addEventListener", typ, actualFunc, once)
+
+	return n
+}
+
+// Release is part of our custom lifecycle. We need a manual destructor, because we
+// have currently two running contexts: our wasm program and the browsers javascript interpreter.
+// This is important to remove callbacks and other attached resources, which would otherwise
+// never be freed, due to global or cyclic references.
+func (n Element) Release() {
+	event := js.Global().Get("Event").New(eventRelease)
+	n.val.Call("dispatchEvent", event)
+}
