@@ -47,12 +47,28 @@ func Class(classes ...string) Modifier {
 	})
 }
 
+func Compose(r Renderable, rm ...RenderableOrModifier) Renderable {
+	return RenderableFunc(func() dom.Element {
+		elem := r.Render()
+		for _, e := range rm {
+			switch t := e.(type) {
+			case Renderable:
+				elem.AppendElement(t.Render())
+			case Modifier:
+				t.Modify(elem)
+			default:
+				panic(fmt.Sprint(e))
+			}
+		}
+		return elem
+	})
+}
+
 func Text(t string) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		e.SetTextContent(t)
 	})
 }
-
 
 func Src(src string) Modifier {
 	return ModifierFunc(func(e dom.Element) {

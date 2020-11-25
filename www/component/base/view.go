@@ -1,10 +1,6 @@
 package base
 
-import (
-	"fmt"
-	"github.com/golangee/forms-example/www/dom"
-	"github.com/golangee/forms-example/www/html"
-)
+import "github.com/golangee/forms-example/www/html"
 
 // A Resource release method should be called for any resource, as soon as it is not required anymore to avoid
 // memory leaks. Afterwards the Resource must not be used anymore.
@@ -19,14 +15,10 @@ type Resource interface {
 
 // A View is a construction plan to describe how to build a view.
 type View struct {
-	posers   []func()html.Composition
 	stateful *Stateful
+	Compose func()html.Renderable
 }
 
-// Describe appends the given modifier which will be executed in order by Render.
-func (v *View) Describe(poser func()html.Composition) {
-	v.posers = append(v.posers, poser)
-}
 
 func (v *View) getStateful() *Stateful {
 	if v.stateful == nil {
@@ -44,6 +36,7 @@ func (v *View) Observe(f func()) Handle {
 	return v.getStateful().Observe(f)
 }
 
+/*
 func (v *View) Render() html.Renderable {
 	return html.RenderableFunc(
 		func() dom.Element {
@@ -67,7 +60,7 @@ func (v *View) Render() html.Renderable {
 			return r
 		},
 	)
-}
+}*/
 
 /*
 func (v *View) Render() html.Renderable {

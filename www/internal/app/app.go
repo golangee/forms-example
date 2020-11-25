@@ -32,19 +32,18 @@ func (a *Application) Run() {
 
 type MyCustomView struct {
 	base.View
+	fu string
 }
 
-func NewMyCustomView() *MyCustomView {
-	c := &MyCustomView{}
-	c.Describe(func() Composition {
-		return Composition{Div(
-			text.NewText("a").Render(),
-			text.NewText("b").Render(),
-		),
-		}
-	})
-
-	return c
+func (m *MyCustomView) Compose() Renderable {
+	return Div(
+		Class(style.Text3xl, style.BgBlack, style.TextBlue600),
+		text.NewText(m.fu).Compose(),
+		text.NewText("b").Compose(),
+		AddEventListener("click", func() {
+			m.Invalidate()
+		}),
+	)
 }
 
 func (a *Application) doStuffWithComponents() {
@@ -52,14 +51,11 @@ func (a *Application) doStuffWithComponents() {
 
 	body := dom.GetWindow().Document().Body()
 
+	myText := base.View{}
 	fu := "xai"
-	myText := text.NewText("hello world")
-	myText.Describe(func() Composition {
-		return Composition{text.NewText(fu).Render()}
-	})
 
-	myText.Describe(func() Composition {
-		return Composition{
+	myText.Compose = func() Renderable {
+		return Div(
 			Class(style.Text3xl, style.BgBlack, style.TextBlue600),
 			Class(style.Text3xl, style.BgBlack, style.TextBlue600),
 			DebugLog("compose: doStuff"),
@@ -67,14 +63,29 @@ func (a *Application) doStuffWithComponents() {
 				a.logger.Print(ecs.Msg("released"))
 			}),
 			Div(Text(fu)),
-			text.NewText("bbbb").Render(),
-		}
-	})
+			text.NewText("bbbb").Compose(), // TODO this must be attached with the observer
+		)
+	}
+
+	/*
+		myText.Describe(func() Composition {
+			return Composition{
+				Class(style.Text3xl, style.BgBlack, style.TextBlue600),
+				Class(style.Text3xl, style.BgBlack, style.TextBlue600),
+				DebugLog("compose: doStuff"),
+				AddEventListenerOnce(dom.EventRelease, func() {
+					a.logger.Print(ecs.Msg("released"))
+				}),
+				Div(Text(fu)),
+				text.NewText("bbbb").Render(),
+			}
+		})
+	*/
 	myText.Observe(func() {
 		log.NewLogger().Print(ecs.Msg("rebuilding"))
 		body.Clear()
-		blub := myText.Render()
-		fu = "doh"
+		fu += "-"
+		blub := myText.Compose()
 		body.AppendElement(blub.Render())
 	})
 
