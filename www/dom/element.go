@@ -6,8 +6,11 @@ import (
 	"syscall/js"
 )
 
-const eventRelease = "forms-release"
+const EventRelease = "forms-release"
 
+// Element is always used in a value context, to avoid additional GC pressure.
+// Therefore our state-handling relies on Javascript messaging (especially the
+// release cycles).
 type Element struct {
 	val js.Value
 }
@@ -21,6 +24,10 @@ func (n Element) SetTextContent(v string) Element {
 	return n
 }
 
+func (n Element) GetTagName() string {
+	return n.val.Get("tagName").String()
+}
+
 func (n Element) SetClassName(str string) Element {
 	n.val.Set("className", str)
 	return n
@@ -32,12 +39,29 @@ func (n Element) AppendElement(aChild Element) Element {
 }
 
 func (n Element) Clear() Element {
+	for _, element := range n.Children() {
+		element.Release()
+	}
 	return n.SetTextContent("")
 }
 
+func (n Element) Children() []Element {
+	var res []Element
+	arr := n.val.Get("children")
+	for i := 0; i < arr.Length(); i++ {
+		res = append(res, newElement(arr.Index(i)))
+	}
+	return res
+}
+
+func(n Element)String()string{
+	return n.val.Get("outerHTML").String()
+}
+
 // Set sets the javascript property
-func (n Element) Set(p string, x interface{}) {
+func (n Element) Set(p string, x interface{}) Element {
 	n.val.Set(p, x)
+	return n
 }
 
 // AddEventListener is internally very complex, because it keeps a global callback
@@ -45,22 +69,30 @@ func (n Element) Set(p string, x interface{}) {
 // a global un-collectable function and the javascript side does the same. This makes
 // event handling currently very expensive. Always ensure that
 // you call Release on this Element to free all resources.
-func (n Element) AddEventListener(typ string, once bool, listener func(e Element)) Element {
+func (n Element) AddEventListener(typ string, once bool, listener func()) Element {
+	log.NewLogger().Print(ecs.Msg("addEventListener " + typ + " " + n.GetTagName()))
+
+	defer GlobalPanicHandler()
+
 	alreadyReleased := false
 	var actualFunc, releaseFunc js.Func
 
 	unregisterJS := func() {
+		defer GlobalPanicHandler()
+
 		if !alreadyReleased {
 			alreadyReleased = true
 			n.val.Call("removeEventListener", typ, actualFunc, once)
-			n.val.Call("removeEventListener", eventRelease, releaseFunc, true)
+			n.val.Call("removeEventListener", EventRelease, releaseFunc, true)
 			actualFunc.Release()
 			releaseFunc.Release()
 		}
 	}
 
 	actualFunc = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		listener(n)
+		defer GlobalPanicHandler()
+
+		listener()
 		if once && !alreadyReleased {
 			unregisterJS()
 		}
@@ -68,6 +100,8 @@ func (n Element) AddEventListener(typ string, once bool, listener func(e Element
 	})
 
 	releaseFunc = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		defer GlobalPanicHandler()
+
 		log.NewLogger().Print(ecs.Msg("func: received release event"))
 		if !alreadyReleased {
 			unregisterJS()
@@ -75,7 +109,7 @@ func (n Element) AddEventListener(typ string, once bool, listener func(e Element
 		return nil
 	})
 
-	n.val.Call("addEventListener", eventRelease, releaseFunc, true)
+	n.val.Call("addEventListener", EventRelease, releaseFunc, true)
 	n.val.Call("addEventListener", typ, actualFunc, once)
 
 	return n
@@ -84,8 +118,32 @@ func (n Element) AddEventListener(typ string, once bool, listener func(e Element
 // Release is part of our custom lifecycle. We need a manual destructor, because we
 // have currently two running contexts: our wasm program and the browsers javascript interpreter.
 // This is important to remove callbacks and other attached resources, which would otherwise
-// never be freed, due to global or cyclic references.
+// never be freed, due to global or cyclic references. All contained children element, will
+// also receive a Release call.
 func (n Element) Release() {
-	event := js.Global().Get("Event").New(eventRelease)
+	for _, element := range n.Children() {
+		element.Release()
+	}
+
+	event := js.Global().Get("Event").New(EventRelease)
 	n.val.Call("dispatchEvent", event)
+}
+
+func (n Element) AddClass(v string) Element {
+	n.val.Get("classList").Call("add", v)
+	return n
+}
+
+func (n Element) HasClass(v string) bool {
+	return n.val.Get("classList").Call("contains", v).Bool()
+}
+
+func (n Element) RemoveClass(v string) Element {
+	n.val.Get("classList").Call("remove", v)
+	return n
+}
+
+// Equal has the Javascript == semantic on the Element (equal reference)
+func (n Element) Equal(o Element) bool {
+	return n.val.Equal(o.val)
 }

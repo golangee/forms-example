@@ -2,7 +2,6 @@ package dom
 
 import "syscall/js"
 
-
 type Window struct {
 	val js.Value
 }

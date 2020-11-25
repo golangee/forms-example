@@ -14,9 +14,14 @@
 
 package main
 
-import "github.com/golangee/forms-example/www/internal/app"
+import (
+	"github.com/golangee/forms-example/www/internal/app"
+	"github.com/golangee/log"
+	"github.com/golangee/log/simple"
+)
 
 func main() {
+	log.SetDefault(simple.PrintColored)
 	a := app.NewApplication()
 	a.Run()
 }

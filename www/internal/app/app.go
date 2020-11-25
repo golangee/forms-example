@@ -1,14 +1,14 @@
 package app
 
 import (
-	"fmt"
+	"github.com/golangee/forms-example/www/component/base"
+	"github.com/golangee/forms-example/www/component/text"
 	"github.com/golangee/forms-example/www/dom"
 	. "github.com/golangee/forms-example/www/html"
 	"github.com/golangee/forms-example/www/internal/build"
+	"github.com/golangee/forms-example/www/style"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
-	"runtime/debug"
-	"strings"
 )
 
 type Application struct {
@@ -23,43 +23,75 @@ func NewApplication() *Application {
 
 func (a *Application) Run() {
 
-	a.execProtect(a.doStuff)
+	//a.doStuff()
+	a.doStuffWithComponents()
 
 	// keep alive
 	select {}
 }
 
-func (a *Application) execProtect(f func()) {
-	defer func() {
-		if r := recover(); r != nil {
-			a.logger.Print(ecs.Msg(fmt.Sprint(r)), ecs.ErrStack())
-			body := dom.GetWindow().Document().Body()
-			body.Clear()
-			formatPanic(r)(body)
-		}
-	}()
-
-	f()
+type MyCustomView struct {
+	base.View
 }
 
-func formatPanic(p interface{}) Modifier {
-	msg := fmt.Sprint(p)
-	lines := strings.Split(string(debug.Stack()), "\n")
-	return Div(Class("rounded overflow-hidden shadow-lg dark:bg-gray-800"),
-		P(Class("text-red-500"), Text(msg)),
-		ForEach(len(lines), func(i int, e dom.Element) {
-			P(Class("text-gray-500"), Text(lines[i]))(e)
-		}),
-	)
+func NewMyCustomView() *MyCustomView {
+	c := &MyCustomView{}
+	c.Describe(func() Composition {
+		return Composition{Div(
+			text.NewText("a").Render(),
+			text.NewText("b").Render(),
+		),
+		}
+	})
+
+	return c
+}
+
+func (a *Application) doStuffWithComponents() {
+	defer dom.GlobalPanicHandler()
+
+	body := dom.GetWindow().Document().Body()
+
+	fu := "xai"
+	myText := text.NewText("hello world")
+	myText.Describe(func() Composition {
+		return Composition{text.NewText(fu).Render()}
+	})
+
+	myText.Describe(func() Composition {
+		return Composition{
+			Class(style.Text3xl, style.BgBlack, style.TextBlue600),
+			Class(style.Text3xl, style.BgBlack, style.TextBlue600),
+			DebugLog("compose: doStuff"),
+			AddEventListenerOnce(dom.EventRelease, func() {
+				a.logger.Print(ecs.Msg("released"))
+			}),
+			Div(Text(fu)),
+			text.NewText("bbbb").Render(),
+		}
+	})
+	myText.Observe(func() {
+		log.NewLogger().Print(ecs.Msg("rebuilding"))
+		body.Clear()
+		blub := myText.Render()
+		fu = "doh"
+		body.AppendElement(blub.Render())
+	})
+
+	myText.Invalidate()
 }
 
 func (a *Application) doStuff() {
+	defer dom.GlobalPanicHandler()
+
 	a.logger.Print(ecs.Msg("application is running30"), log.V("build.commit", build.Commit))
 
 	body := dom.GetWindow().Document().Body()
 	body.Clear()
 
+	counter := 0
 	var myImg dom.Element
+	var nameText dom.Element
 	content :=
 		Div(Class("rounded overflow-hidden shadow-lg dark:bg-gray-800"),
 			Figure(Class("md:flex bg-gray-100 rounded-xl p-8 md:p-0"),
@@ -68,8 +100,9 @@ func (a *Application) doStuff() {
 					Src("https://tailwindcss.com/_next/static/media/sarah-dayan.a8ff3f1095a58085a82e3bb6aab12eb2.jpg"),
 					Width("384"),
 					Height("512"),
-					Self(&myImg),
-					AddEventListener("click", false, func(e dom.Element) {
+					//	Self(&myImg),
+					AddEventListener("click", func() {
+
 						a.logger.Print(ecs.Msg("clicked it"))
 						myImg.SetClassName("rounded-xl")
 					}),
@@ -85,9 +118,15 @@ func (a *Application) doStuff() {
 					Figcaption(Class("font-medium"),
 						Div(Class("text-yellow-400"),
 							Text("Sarah Dayan"),
-							AddEventListener("click", true, func(e dom.Element) {
+							//Self(&nameText),
+							AddEventListenerOnce("click", func() {
+								counter++
+								nameText.SetTextContent("absolute nice")
 								a.logger.Print(ecs.Msg("only once clicked it"))
 								myImg.SetClassName("rounded-xl")
+								var failTest *int
+								*failTest = 5
+								_ = failTest
 							}),
 						),
 						Div(Class("text-gray-500"),
@@ -103,7 +142,7 @@ func (a *Application) doStuff() {
 			),
 		)
 
-	content(body)
+	body.AppendElement(content.Render())
 
 	myImg.Release()
 }
