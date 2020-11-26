@@ -8,6 +8,10 @@ type Handle struct {
 }
 
 func (h Handle) Release() {
+	if h.parent == nil {
+		return
+	}
+
 	h.parent.lock.Lock()
 	defer h.parent.lock.Unlock()
 
@@ -41,5 +45,5 @@ func (c *Stateful) Observe(f func()) Handle {
 	defer c.lock.Unlock()
 
 	c.observers = append(c.observers, f)
-	return Handle{idx: len(c.observers)}
+	return Handle{parent: c, idx: len(c.observers) - 1}
 }

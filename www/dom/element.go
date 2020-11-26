@@ -54,7 +54,13 @@ func (n Element) Children() []Element {
 	return res
 }
 
-func(n Element)String()string{
+func (n Element) ReplaceWith(o Element) Element {
+	n.val.Call("replaceWith", o.val)
+	//	n.AppendElement(o)
+	return o
+}
+
+func (n Element) String() string {
 	return n.val.Get("outerHTML").String()
 }
 
@@ -127,6 +133,18 @@ func (n Element) Release() {
 
 	event := js.Global().Get("Event").New(EventRelease)
 	n.val.Call("dispatchEvent", event)
+}
+
+func (n Element) AddReleaseListener(f func()) Element {
+	var fun js.Func
+	fun = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		fun.Release()
+		f()
+		return nil
+	})
+
+	n.val.Call("addEventListener", EventRelease, fun, true)
+	return n
 }
 
 func (n Element) AddClass(v string) Element {

@@ -1,4 +1,4 @@
-package html
+package base
 
 import (
 	"fmt"
@@ -8,16 +8,36 @@ import (
 	"strings"
 )
 
-func Element(name string, rm ...RenderableOrModifier) Renderable {
-	return RenderableFunc(func() dom.Element {
+func Element(name string, rm ...RenderNode) Renderable {
+	return BuilderFunc(func() dom.Element {
 		elem := dom.GetWindow().Document().CreateElement(name)
 
 		for _, e := range rm {
 			switch t := e.(type) {
 			case Renderable:
-				elem.AppendElement(t.Render())
+				elem.AppendElement(t.CreateElement())
 			case Modifier:
 				t.Modify(elem)
+			case RenderableView:
+				x := t.Render().CreateElement()
+				var observer func()
+				var xHandle Handle
+				observer = func() {
+					x.Release()
+					xHandle.Release()
+					newElem := t.Render().CreateElement()
+					x = x.ReplaceWith(newElem)
+					xHandle = t.Observe(observer)
+					x.AddReleaseListener(func() {
+						xHandle.Release()
+					})
+				}
+				xHandle = t.Observe(observer)
+
+				x.AddReleaseListener(func() {
+					xHandle.Release()
+				})
+				elem.AppendElement(x)
 			default:
 				panic(fmt.Sprint(e))
 			}
@@ -28,7 +48,7 @@ func Element(name string, rm ...RenderableOrModifier) Renderable {
 	})
 }
 
-func Div(e ...RenderableOrModifier) Renderable {
+func Div(e ...RenderNode) Renderable {
 	return Element("div", e...)
 }
 
@@ -44,23 +64,6 @@ func Class(classes ...string) Modifier {
 		}
 
 		e.SetClassName(strings.Join(classes, " "))
-	})
-}
-
-func Compose(r Renderable, rm ...RenderableOrModifier) Renderable {
-	return RenderableFunc(func() dom.Element {
-		elem := r.Render()
-		for _, e := range rm {
-			switch t := e.(type) {
-			case Renderable:
-				elem.AppendElement(t.Render())
-			case Modifier:
-				t.Modify(elem)
-			default:
-				panic(fmt.Sprint(e))
-			}
-		}
-		return elem
 	})
 }
 
@@ -95,49 +98,49 @@ func Height(h string) Modifier {
 	})
 }
 
-func Figure(mods ...RenderableOrModifier) Renderable {
+func Figure(mods ...RenderNode) Renderable {
 	return Element("figure", mods...)
 }
 
-func Ul(mods ...RenderableOrModifier) Renderable {
+func Ul(mods ...RenderNode) Renderable {
 	return Element("ul", mods...)
 }
 
-func Li(mods ...RenderableOrModifier) Renderable {
+func Li(mods ...RenderNode) Renderable {
 	return Element("li", mods...)
 }
 
-func Ol(mods ...RenderableOrModifier) Renderable {
+func Ol(mods ...RenderNode) Renderable {
 	return Element("ol", mods...)
 }
 
-func Img(mods ...RenderableOrModifier) Renderable {
+func Img(mods ...RenderNode) Renderable {
 	return Element("img", mods...)
 }
 
-func P(mods ...RenderableOrModifier) Renderable {
+func P(mods ...RenderNode) Renderable {
 	return Element("p", mods...)
 }
 
-func Blockquote(mods ...RenderableOrModifier) Renderable {
+func Blockquote(mods ...RenderNode) Renderable {
 	return Element("blockquote", mods...)
 }
 
-func Figcaption(mods ...RenderableOrModifier) Renderable {
+func Figcaption(mods ...RenderNode) Renderable {
 	return Element("figcaption", mods...)
 }
 
-func Span(mods ...RenderableOrModifier) Renderable {
+func Span(mods ...RenderNode) Renderable {
 	return Element("span", mods...)
 }
 
-func ForEach(len int, f func(i int) RenderableOrModifier) Modifier {
+func ForEach(len int, f func(i int) RenderNode) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		for i := 0; i < len; i++ {
 			x := f(i)
 			switch t := x.(type) {
 			case Renderable:
-				e.AppendElement(t.Render())
+				e.AppendElement(t.CreateElement())
 			case Modifier:
 				t.Modify(e)
 			default:

@@ -1,14 +1,13 @@
 package app
 
 import (
-	"github.com/golangee/forms-example/www/component/base"
+	. "github.com/golangee/forms-example/www/component/base"
 	"github.com/golangee/forms-example/www/component/text"
 	"github.com/golangee/forms-example/www/dom"
-	. "github.com/golangee/forms-example/www/html"
-	"github.com/golangee/forms-example/www/internal/build"
 	"github.com/golangee/forms-example/www/style"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
+	"time"
 )
 
 type Application struct {
@@ -31,15 +30,15 @@ func (a *Application) Run() {
 }
 
 type MyCustomView struct {
-	base.View
+	View
 	fu string
 }
 
-func (m *MyCustomView) Compose() Renderable {
+func (m *MyCustomView) Render() Renderable {
 	return Div(
 		Class(style.Text3xl, style.BgBlack, style.TextBlue600),
-		text.NewText(m.fu).Compose(),
-		text.NewText("b").Compose(),
+		text.NewText(m.fu).Render(),
+		text.NewText("b").Render(),
 		AddEventListener("click", func() {
 			m.Invalidate()
 		}),
@@ -51,10 +50,10 @@ func (a *Application) doStuffWithComponents() {
 
 	body := dom.GetWindow().Document().Body()
 
-	myText := base.View{}
+	myText := View{}
 	fu := "xai"
 
-	myText.Compose = func() Renderable {
+	myText.Render = func() Renderable {
 		return Div(
 			Class(style.Text3xl, style.BgBlack, style.TextBlue600),
 			Class(style.Text3xl, style.BgBlack, style.TextBlue600),
@@ -63,7 +62,7 @@ func (a *Application) doStuffWithComponents() {
 				a.logger.Print(ecs.Msg("released"))
 			}),
 			Div(Text(fu)),
-			text.NewText("bbbb").Compose(), // TODO this must be attached with the observer
+			text.NewText("bbbb"), // TODO this must be attached with the observer
 		)
 	}
 
@@ -77,7 +76,7 @@ func (a *Application) doStuffWithComponents() {
 					a.logger.Print(ecs.Msg("released"))
 				}),
 				Div(Text(fu)),
-				text.NewText("bbbb").Render(),
+				text.NewText("bbbb").CreateElement(),
 			}
 		})
 	*/
@@ -85,13 +84,21 @@ func (a *Application) doStuffWithComponents() {
 		log.NewLogger().Print(ecs.Msg("rebuilding"))
 		body.Clear()
 		fu += "-"
-		blub := myText.Compose()
-		body.AppendElement(blub.Render())
+		blub := myText.Render()
+		body.AppendElement(blub.CreateElement())
+
+		go func() {
+			time.Sleep(10*time.Second)
+			body.Clear()
+		}()
+
 	})
+
 
 	myText.Invalidate()
 }
 
+/*
 func (a *Application) doStuff() {
 	defer dom.GlobalPanicHandler()
 
@@ -153,7 +160,8 @@ func (a *Application) doStuff() {
 			),
 		)
 
-	body.AppendElement(content.Render())
+	body.AppendElement(content.CreateElement())
 
 	myImg.Release()
 }
+*/

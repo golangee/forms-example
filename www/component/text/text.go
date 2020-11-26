@@ -1,29 +1,33 @@
 package text
 
 import (
-	"github.com/golangee/forms-example/www/component/base"
-	h "github.com/golangee/forms-example/www/html"
+	h "github.com/golangee/forms-example/www/component/base"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
+	"strconv"
 	"time"
 )
 
 type Text struct {
 	text string
-	base.View
+	h.View
 }
 
 func NewText(text string) *Text {
 	c := &Text{}
 	c.text = text
+	c.SetTag("Text@"+strconv.Itoa(time.Now().Second()))
 
+	var bla h.RenderableView
+	bla = c
+	_ = bla
 	return c
 }
 
-func (c *Text) Compose() h.Renderable {
-	return h.Span(h.Text(c.text), h.DebugLog("compose: NewText"), h.AddEventListener("click", func() {
-		c.SetText("hey " + time.Now().String() + " ->" + c.text)
-		log.NewLogger().Print(ecs.Msg("hey"))
+func (c *Text) Render() h.Renderable {
+	return h.Span(h.Text(c.text), h.AddEventListener("click", func() {
+		c.SetText("hey " + time.Now().String())
+		log.NewLogger().Print(ecs.Msg(c.text))
 	}))
 }
 
