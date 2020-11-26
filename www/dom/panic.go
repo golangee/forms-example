@@ -9,7 +9,7 @@ import (
 )
 
 // The GlobalPanicHandler should be called with a defer in every method or callback which
-// will likely cause a panic. A non-recovered panic will the cause the wasm-Code to just
+// will likely cause a panic. A non-recovered panic will cause the wasm-Code to just
 // exit silently, which is in practice not very helpful. You probably want to do some
 // event logging or just show a support screen. Without that, the user may try to continue
 // interacting with an already dead application, which must be avoided in all cases, to
@@ -22,7 +22,6 @@ var GlobalPanicHandler = func() {
 	if r == nil {
 		return
 	}
-
 	msg := fmt.Sprint(r)
 
 	log.NewLogger().Print(ecs.Msg(msg), ecs.ErrStack())

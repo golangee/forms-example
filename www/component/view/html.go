@@ -1,4 +1,4 @@
-package base
+package view
 
 import (
 	"fmt"
@@ -8,24 +8,27 @@ import (
 	"strings"
 )
 
-func Element(name string, rm ...RenderNode) Renderable {
-	return BuilderFunc(func() dom.Element {
-		elem := dom.GetWindow().Document().CreateElement(name)
+func Element(name string, rm ...Renderable) Node {
+	return WithElement(dom.GetWindow().Document().CreateElement(name), rm...)
+}
+
+func WithElement(elem dom.Element, rm ...Renderable) Node {
+	return NodeFunc(func() dom.Element {
 
 		for _, e := range rm {
 			switch t := e.(type) {
-			case Renderable:
-				elem.AppendElement(t.CreateElement())
+			case Node:
+				elem.AppendElement(t.Element())
 			case Modifier:
 				t.Modify(elem)
-			case RenderableView:
-				x := t.Render().CreateElement()
+			case Component:
+				x := t.Render().Element()
 				var observer func()
 				var xHandle Handle
 				observer = func() {
 					x.Release()
 					xHandle.Release()
-					newElem := t.Render().CreateElement()
+					newElem := t.Render().Element()
 					x = x.ReplaceWith(newElem)
 					xHandle = t.Observe(observer)
 					x.AddReleaseListener(func() {
@@ -48,7 +51,7 @@ func Element(name string, rm ...RenderNode) Renderable {
 	})
 }
 
-func Div(e ...RenderNode) Renderable {
+func Div(e ...Renderable) Node {
 	return Element("div", e...)
 }
 
@@ -69,7 +72,8 @@ func Class(classes ...string) Modifier {
 
 func Text(t string) Modifier {
 	return ModifierFunc(func(e dom.Element) {
-		e.SetTextContent(t)
+		//e.SetTextContent(t)
+		e.AppendTextNode(t)
 	})
 }
 
@@ -98,49 +102,49 @@ func Height(h string) Modifier {
 	})
 }
 
-func Figure(mods ...RenderNode) Renderable {
+func Figure(mods ...Renderable) Node {
 	return Element("figure", mods...)
 }
 
-func Ul(mods ...RenderNode) Renderable {
+func Ul(mods ...Renderable) Node {
 	return Element("ul", mods...)
 }
 
-func Li(mods ...RenderNode) Renderable {
+func Li(mods ...Renderable) Node {
 	return Element("li", mods...)
 }
 
-func Ol(mods ...RenderNode) Renderable {
+func Ol(mods ...Renderable) Node {
 	return Element("ol", mods...)
 }
 
-func Img(mods ...RenderNode) Renderable {
+func Img(mods ...Renderable) Node {
 	return Element("img", mods...)
 }
 
-func P(mods ...RenderNode) Renderable {
+func P(mods ...Renderable) Node {
 	return Element("p", mods...)
 }
 
-func Blockquote(mods ...RenderNode) Renderable {
+func Blockquote(mods ...Renderable) Node {
 	return Element("blockquote", mods...)
 }
 
-func Figcaption(mods ...RenderNode) Renderable {
+func Figcaption(mods ...Renderable) Node {
 	return Element("figcaption", mods...)
 }
 
-func Span(mods ...RenderNode) Renderable {
+func Span(mods ...Renderable) Node {
 	return Element("span", mods...)
 }
 
-func ForEach(len int, f func(i int) RenderNode) Modifier {
+func ForEach(len int, f func(i int) Renderable) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		for i := 0; i < len; i++ {
 			x := f(i)
 			switch t := x.(type) {
-			case Renderable:
-				e.AppendElement(t.CreateElement())
+			case Node:
+				e.AppendElement(t.Element())
 			case Modifier:
 				t.Modify(e)
 			default:
@@ -161,6 +165,10 @@ func AddEventListener(eventType string, f func()) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		e.AddEventListener(eventType, false, f)
 	})
+}
+
+func AddClickListener(f func()) Modifier {
+	return AddEventListener("click", f)
 }
 
 func AddEventListenerOnce(eventType string, f func()) Modifier {

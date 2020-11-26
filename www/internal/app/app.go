@@ -1,13 +1,13 @@
 package app
 
 import (
-	. "github.com/golangee/forms-example/www/component/base"
 	"github.com/golangee/forms-example/www/component/text"
+	. "github.com/golangee/forms-example/www/component/view"
 	"github.com/golangee/forms-example/www/dom"
+	"github.com/golangee/forms-example/www/internal/build"
 	"github.com/golangee/forms-example/www/style"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
-	"time"
 )
 
 type Application struct {
@@ -22,8 +22,8 @@ func NewApplication() *Application {
 
 func (a *Application) Run() {
 
-	//a.doStuff()
-	a.doStuffWithComponents()
+	a.doStuff()
+	//a.doStuffWithComponents()
 
 	// keep alive
 	select {}
@@ -34,7 +34,7 @@ type MyCustomView struct {
 	fu string
 }
 
-func (m *MyCustomView) Render() Renderable {
+func (m *MyCustomView) Render() Node {
 	return Div(
 		Class(style.Text3xl, style.BgBlack, style.TextBlue600),
 		text.NewText(m.fu).Render(),
@@ -48,12 +48,8 @@ func (m *MyCustomView) Render() Renderable {
 func (a *Application) doStuffWithComponents() {
 	defer dom.GlobalPanicHandler()
 
-	body := dom.GetWindow().Document().Body()
-
-	myText := View{}
 	fu := "xai"
-
-	myText.Render = func() Renderable {
+	myText := NewInlineView(func() Node {
 		return Div(
 			Class(style.Text3xl, style.BgBlack, style.TextBlue600),
 			Class(style.Text3xl, style.BgBlack, style.TextBlue600),
@@ -62,50 +58,17 @@ func (a *Application) doStuffWithComponents() {
 				a.logger.Print(ecs.Msg("released"))
 			}),
 			Div(Text(fu)),
-			text.NewText("bbbb"), // TODO this must be attached with the observer
+			Span(text.NewText("bbbb"), Class(style.BgRed500)),
 		)
-	}
-
-	/*
-		myText.Describe(func() Composition {
-			return Composition{
-				Class(style.Text3xl, style.BgBlack, style.TextBlue600),
-				Class(style.Text3xl, style.BgBlack, style.TextBlue600),
-				DebugLog("compose: doStuff"),
-				AddEventListenerOnce(dom.EventRelease, func() {
-					a.logger.Print(ecs.Msg("released"))
-				}),
-				Div(Text(fu)),
-				text.NewText("bbbb").CreateElement(),
-			}
-		})
-	*/
-	myText.Observe(func() {
-		log.NewLogger().Print(ecs.Msg("rebuilding"))
-		body.Clear()
-		fu += "-"
-		blub := myText.Render()
-		body.AppendElement(blub.CreateElement())
-
-		go func() {
-			time.Sleep(10*time.Second)
-			body.Clear()
-		}()
-
 	})
 
-
-	myText.Invalidate()
+	RenderBody(myText)
 }
 
-/*
 func (a *Application) doStuff() {
 	defer dom.GlobalPanicHandler()
 
 	a.logger.Print(ecs.Msg("application is running30"), log.V("build.commit", build.Commit))
-
-	body := dom.GetWindow().Document().Body()
-	body.Clear()
 
 	counter := 0
 	var myImg dom.Element
@@ -119,7 +82,7 @@ func (a *Application) doStuff() {
 					Width("384"),
 					Height("512"),
 					//	Self(&myImg),
-					AddEventListener("click", func() {
+					AddClickListener(func() {
 
 						a.logger.Print(ecs.Msg("clicked it"))
 						myImg.SetClassName("rounded-xl")
@@ -160,8 +123,7 @@ func (a *Application) doStuff() {
 			),
 		)
 
-	body.AppendElement(content.CreateElement())
+	RenderBody(content)
 
-	myImg.Release()
+	//myImg.Release()
 }
-*/

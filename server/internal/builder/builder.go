@@ -213,7 +213,7 @@ func BuildProject(srcDir, dstDir string) error {
 	buildErr := GoBuildWasm(srcDir, filepath.Join(dstDir, wasmFilename))
 
 	if buildErr != nil {
-		idxDat.Body = strings.Join(strings.Split(buildErr.Error(), "\n"), "<br/>")
+		idxDat.Body = buildErrAsHtml(buildErr.Error())
 		idxDat.LoadWasm = false
 	} else {
 		idxDat.LoadWasm = true
@@ -228,4 +228,27 @@ func BuildProject(srcDir, dstDir string) error {
 	}
 
 	return nil
+}
+
+func buildErrAsHtml(str string) string {
+	sb := &strings.Builder{}
+	sb.WriteString("<div class=\"h-screen bg-gray-600 p-10\">")
+	sb.WriteString("<div class=\"bg-white max-w-6xl p-1 rounded overflow-hidden shadow-lg dark:bg-gray-800\">\n")
+	sb.WriteString("<p class=\"text-xl text-red-600\">build error</p>")
+	for _, line := range strings.Split(str, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		if strings.HasPrefix(line,"exit status"){
+			sb.WriteString("<p class=\"text-base medium\">")
+		}else{
+			sb.WriteString("<p class=\"text-base text-red-600 medium\">")
+		}
+		sb.WriteString(line)
+		sb.WriteString("</p>\n")
+	}
+	sb.WriteString("</div>\n")
+	sb.WriteString("</div>\n")
+	return sb.String()
 }

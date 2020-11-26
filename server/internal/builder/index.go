@@ -29,7 +29,6 @@ func BuildIndex(dstFile string, indexData IndexData) error {
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
 	<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-	<link href="https://unpkg.com/@tailwindcss/typography@^2/dist/typography.min.css" rel="stylesheet" >
 
     <script src="wasm_exec.js?v={{.WasmBridgeVersion}}"></script>
 	{{if .HotReload}}

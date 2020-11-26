@@ -24,6 +24,12 @@ func (n Element) SetTextContent(v string) Element {
 	return n
 }
 
+func (n Element) AppendTextNode(t string) Element {
+	tn := GetWindow().Document().createTextNode(t)
+	n.val.Call("appendChild", tn)
+	return n
+}
+
 func (n Element) GetTagName() string {
 	return n.val.Get("tagName").String()
 }
@@ -138,8 +144,13 @@ func (n Element) Release() {
 func (n Element) AddReleaseListener(f func()) Element {
 	var fun js.Func
 	fun = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		fun.Release()
+		defer GlobalPanicHandler()
+
 		f()
+
+		// TODO not sure if 'once' is used correctly, but without removing, we get weired warnings
+		n.val.Call("removeEventListener", EventRelease, fun, true)
+		fun.Release()
 		return nil
 	})
 

@@ -15,6 +15,11 @@ func (n Document) Body() Element {
 }
 
 // In an HTML document, the document.createElement() method creates the HTML element specified by tagName, or an HTMLUnknownElement if tagName isn't recognized.
+func (n Document) createTextNode(name string) js.Value {
+	return n.val.Call("createTextNode", name)
+}
+
+// In an HTML document, the document.createElement() method creates the HTML element specified by tagName, or an HTMLUnknownElement if tagName isn't recognized.
 func (n Document) CreateElement(name string) Element {
 	v := n.val.Call("createElement", name)
 	return newElement(v)
