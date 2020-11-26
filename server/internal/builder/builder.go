@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -14,7 +15,7 @@ const (
 	wasmFilename       = "app.wasm"
 	goRootJsBridge     = "misc/wasm/wasm_exec.js"
 	wasmBridgeFilename = "wasm_exec.js"
-	indexHtml          = "index.html"
+	indexHtml          = "index.gohtml"
 )
 
 type BuildErr struct {
@@ -183,6 +184,39 @@ func CopyFile(dst, src string) error {
 	return nil
 }
 
+// CopyDir copies from source to dst overwriting any existing files. Extra files are not removed.
+// Hidden files are ignored.
+func CopyDir(dst, src string) error {
+	files, err := ioutil.ReadDir(src)
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
+		if strings.HasPrefix(file.Name(), ".") {
+			continue
+		}
+
+		srcPath := filepath.Join(src, file.Name())
+		dstPath := filepath.Join(dst, file.Name())
+		if file.IsDir() {
+			if err := os.MkdirAll(dstPath, os.ModePerm); err != nil {
+				return err
+			}
+
+			if err := CopyDir(dstPath, srcPath); err != nil {
+				return err
+			}
+		} else {
+			if err := CopyFile(dstPath, srcPath); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
 // BuildProject builds an entire golangee wasm project from src to dst.
 func BuildProject(srcDir, dstDir string) error {
 	wasmHash, err := HashFileTree(srcDir)
@@ -197,6 +231,11 @@ func BuildProject(srcDir, dstDir string) error {
 
 	if err := CopyFile(filepath.Join(dstDir, wasmBridgeFilename), filepath.Join(goRoot, goRootJsBridge)); err != nil {
 		return fmt.Errorf("unable to provide wasm-js-bridge: %w", err)
+	}
+
+	// TODO this is inefficient, we should ever read the source and target directory once and compare and update only the different files
+	if err := CopyDir(dstDir, filepath.Join(srcDir, "static")); err != nil {
+		return fmt.Errorf("unable to copy static: %w", err)
 	}
 
 	bridgeHash, err := HashFile(filepath.Join(goRoot, goRootJsBridge))
@@ -219,9 +258,11 @@ func BuildProject(srcDir, dstDir string) error {
 		idxDat.LoadWasm = true
 	}
 
-	if err := BuildIndex(filepath.Join(dstDir, indexHtml), idxDat); err != nil {
+	if err := RewriteHTML(filepath.Join(dstDir, indexHtml), idxDat); err != nil {
 		return fmt.Errorf("unable to create index html: %w", err)
 	}
+
+	_ = os.Remove(filepath.Join(dstDir, indexHtml))
 
 	if buildErr != nil {
 		return BuildErr{buildErr}
@@ -240,9 +281,9 @@ func buildErrAsHtml(str string) string {
 		if line == "" {
 			continue
 		}
-		if strings.HasPrefix(line,"exit status"){
+		if strings.HasPrefix(line, "exit status") {
 			sb.WriteString("<p class=\"text-base medium\">")
-		}else{
+		} else {
 			sb.WriteString("<p class=\"text-base text-red-600 medium\">")
 		}
 		sb.WriteString(line)
