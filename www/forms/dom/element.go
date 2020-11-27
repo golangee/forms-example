@@ -78,6 +78,21 @@ func (n Element) Set(p string, x interface{}) Element {
 	return n
 }
 
+// Call is an unclean abstraction and can invoke attached javascript methods.
+// Args which are elements, are internally unwrapped.
+func (n Element) Call(name string, args ...interface{}) Element {
+	tmp := make([]interface{}, len(args))
+	copy(tmp, args)
+	for i, arg := range tmp {
+		if elem, ok := arg.(Element); ok {
+			tmp[i] = elem.val
+		}
+	}
+
+	n.val.Call(name, tmp...)
+	return n
+}
+
 // AddEventListener is internally very complex, because it keeps a global callback
 // reference to connect the wasm and the javascript context. The wasm side must keep
 // a global un-collectable function and the javascript side does the same. This makes

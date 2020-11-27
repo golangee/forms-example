@@ -1,8 +1,10 @@
 package app
 
 import (
+	"github.com/golangee/forms-example/www/forms/dom"
 	"github.com/golangee/forms-example/www/forms/router"
 	. "github.com/golangee/forms-example/www/forms/view"
+	"github.com/golangee/forms-example/www/internal/index"
 	"strings"
 )
 
@@ -54,7 +56,32 @@ func (a *Application) page(q router.Query, content Renderable) Renderable {
 				),
 
 				// main content area
-				content,
+				Div(
+					// the documentation section
+					Div(Class("bg-white p-1 border-b border-gray-200"),
+						With(func() Renderable {
+							tutorial := index.Tutorials.Find(q.Path())
+							return P(Text(tutorial.Doc))
+						}),
+					),
+
+					// our component
+					content,
+
+					// source code
+					Div(Class("bg-white p-1 border-t border-gray-200"),
+						Pre(
+							Code(Class("language-go"),
+								Text(index.Tutorials.Find(q.Path()).Code),
+								InsideDom(func(e dom.Element) {
+									dom.GetGlobal().Get("hljs").Call("highlightBlock", e)
+								}),
+							),
+						),
+					),
+				),
+
+
 			),
 
 		),

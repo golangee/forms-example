@@ -144,6 +144,14 @@ func P(mods ...Renderable) Node {
 	return Element("p", mods...)
 }
 
+func Pre(mods ...Renderable) Node {
+	return Element("pre", mods...)
+}
+
+func Code(mods ...Renderable) Node {
+	return Element("code", mods...)
+}
+
 func Blockquote(mods ...Renderable) Node {
 	return Element("blockquote", mods...)
 }
@@ -154,6 +162,30 @@ func Figcaption(mods ...Renderable) Node {
 
 func Span(mods ...Renderable) Node {
 	return Element("span", mods...)
+}
+
+func With(f func() Renderable) Modifier {
+	return ModifierFunc(func(e dom.Element) {
+		x := f()
+		if x == nil {
+			return
+		}
+
+		switch t := x.(type) {
+		case Node:
+			e.AppendElement(t.Element())
+		case Modifier:
+			t.Modify(e)
+		default:
+			panic(fmt.Sprint(e))
+		}
+	})
+}
+
+func InsideDom(f func(e dom.Element)) Modifier {
+	return ModifierFunc(func(e dom.Element) {
+		f(e)
+	})
 }
 
 func ForEach(len int, f func(i int) Renderable) Modifier {
