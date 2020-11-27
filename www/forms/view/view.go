@@ -11,10 +11,12 @@ type Resource interface {
 }
 
 // A View is a construction plan to describe how to build a view.
+// Intentionally, this View does not provide a Render()Node method for two important reasons:
+//  1. a View for it alone would be a Component, however without any useable benefit
+//  2. because there is no overloading, we cannot give a hint, to implement it correctly
 type View struct {
 	stateful *Stateful
-	//activeElem *dom.Element
-	tag string
+	tag      string
 }
 
 // nodeOrModifierOrComponent is our private marker contract.

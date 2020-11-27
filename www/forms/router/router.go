@@ -20,6 +20,7 @@ import (
 	"github.com/golangee/log/ecs"
 	"net/url"
 	"sort"
+	"strings"
 )
 
 type Route struct {
@@ -66,6 +67,11 @@ func (r *Router) Routes() []Route {
 }
 
 func (r *Router) AddRoute(path string, f func(Query)) *Router {
+	pIdx := strings.IndexRune(path, '?')
+	if pIdx >= 0 {
+		path = path[:pIdx]
+	}
+
 	r.log.Print(ecs.Msg("registered route"), ecs.URLPath(path))
 	r.routes2Actions[path] = f
 	return r

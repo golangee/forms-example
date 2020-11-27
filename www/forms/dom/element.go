@@ -1,8 +1,6 @@
 package dom
 
 import (
-	"github.com/golangee/log"
-	"github.com/golangee/log/ecs"
 	"syscall/js"
 )
 
@@ -86,7 +84,6 @@ func (n Element) Set(p string, x interface{}) Element {
 // event handling currently very expensive. Always ensure that
 // you call Release on this Element to free all resources.
 func (n Element) AddEventListener(typ string, once bool, listener func()) Element {
-	log.NewLogger().Print(ecs.Msg("addEventListener " + typ + " " + n.GetTagName()))
 
 	defer GlobalPanicHandler()
 
@@ -118,7 +115,6 @@ func (n Element) AddEventListener(typ string, once bool, listener func()) Elemen
 	releaseFunc = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		defer GlobalPanicHandler()
 
-		log.NewLogger().Print(ecs.Msg("func: received release event"))
 		if !alreadyReleased {
 			unregisterJS()
 		}

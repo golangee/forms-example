@@ -5,6 +5,7 @@ import (
 	"github.com/golangee/forms-example/www/forms/dom"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
+	"reflect"
 	"strings"
 )
 
@@ -42,7 +43,7 @@ func WithElement(elem dom.Element, rm ...Renderable) Node {
 				})
 				elem.AppendElement(x)
 			default:
-				panic(fmt.Sprint(e))
+				panic(fmt.Sprintf("the type '%s' must be either a Node, a Modifier or a Component. Did you forget to add the Render method?", reflect.TypeOf(t).String()))
 			}
 
 		}
@@ -87,9 +88,19 @@ func I(mods ...Renderable) Node {
 	return Element("i", mods...)
 }
 
+func A(mods ...Renderable) Node {
+	return Element("a", mods...)
+}
+
 func Alt(a string) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		e.Set("alt", a)
+	})
+}
+
+func Href(href string) Modifier {
+	return ModifierFunc(func(e dom.Element) {
+		e.Set("href", href)
 	})
 }
 
@@ -140,7 +151,6 @@ func Figcaption(mods ...Renderable) Node {
 func Span(mods ...Renderable) Node {
 	return Element("span", mods...)
 }
-
 
 func ForEach(len int, f func(i int) Renderable) Modifier {
 	return ModifierFunc(func(e dom.Element) {

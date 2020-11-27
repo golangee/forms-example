@@ -9,7 +9,11 @@ type Renderable interface {
 	nodeOrModifierOrComponent()
 }
 
-// A Component interface is currently only implementable by embedding a View.
+// A Component interface is currently only implementable by embedding a View. You may ask "if there is just one
+// implementation, why would you need an interface?". The answer is, "because you did not read carefully enough".
+// There will be as many implementations, as you create, however, only a part for the Component contract can
+// be introduced by embedding a View. An interface is required to rely on dynamic polymorphic method dispatching, which
+// can only be achieved by using interfaces.
 type Component interface {
 	// Render returns a view root Node.
 	Render() Node
