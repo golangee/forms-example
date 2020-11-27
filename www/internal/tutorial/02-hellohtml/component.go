@@ -15,7 +15,7 @@ func FromQuery(router.Query) Renderable {
 	return Div(Class("rounded overflow-hidden shadow-lg dark:bg-gray-800"),
 		Figure(Class("md:flex bg-gray-100 rounded-xl p-8 md:p-0"),
 			Img(
-				Class("w-32 h-32 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto"),
+				Class("object-contain w-32 h-32 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto"),
 				Src("https://content-prod.worldiety.de/v2/media/images/wdy_200414_torben.d48be593.png"),
 				Width("384"),
 				Height("512"),

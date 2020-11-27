@@ -9,7 +9,7 @@ import (
 	"github.com/golangee/forms-example/www/forms/view"
 )
 
-const Path = "/tutorial/03-helloworld?name=world"
+const Path = "/tutorial/03-helloparam?name=world"
 
 type ContentView struct {
 	msg string

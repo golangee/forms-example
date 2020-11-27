@@ -56,6 +56,10 @@ func Div(e ...Renderable) Node {
 	return Element("div", e...)
 }
 
+func Nav(e ...Renderable) Node {
+	return Element("nav", e...)
+}
+
 func Class(classes ...string) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		if len(classes) == 0 {
