@@ -2,7 +2,7 @@ package view
 
 import (
 	"fmt"
-	"github.com/golangee/forms-example/www/dom"
+	"github.com/golangee/forms-example/www/forms/dom"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
 	"strings"
@@ -81,7 +81,10 @@ func Src(src string) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		e.Set("src", src)
 	})
+}
 
+func I(mods ...Renderable) Node {
+	return Element("i", mods...)
 }
 
 func Alt(a string) Modifier {
@@ -137,6 +140,7 @@ func Figcaption(mods ...Renderable) Node {
 func Span(mods ...Renderable) Node {
 	return Element("span", mods...)
 }
+
 
 func ForEach(len int, f func(i int) Renderable) Modifier {
 	return ModifierFunc(func(e dom.Element) {

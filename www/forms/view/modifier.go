@@ -1,6 +1,6 @@
 package view
 
-import "github.com/golangee/forms-example/www/dom"
+import "github.com/golangee/forms-example/www/forms/dom"
 
 // Modifier is Renderable which changes attributes or contents of the given dom.Element.
 type Modifier interface {

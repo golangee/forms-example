@@ -1,6 +1,6 @@
 package view
 
-import "github.com/golangee/forms-example/www/dom"
+import "github.com/golangee/forms-example/www/forms/dom"
 
 // A Node gives access to a dom.Element. Usually the (render) Node allocates a new
 // Element, which can be attached.

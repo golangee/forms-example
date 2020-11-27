@@ -1,6 +1,6 @@
 package view
 
-import "github.com/golangee/forms-example/www/dom"
+import "github.com/golangee/forms-example/www/forms/dom"
 
 // Renderable is a marker interface which identifies one of our three kinds of
 // DOM manipulation primitives. This must be one of Component, Node or Modifier.

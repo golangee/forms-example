@@ -51,6 +51,10 @@ func (n Element) Clear() Element {
 	return n.SetTextContent("")
 }
 
+func (n Element) Style() Style {
+	return newStyle(n.val.Get("style"))
+}
+
 func (n Element) Children() []Element {
 	var res []Element
 	arr := n.val.Get("children")

@@ -1,32 +1,50 @@
 package app
 
 import (
-	"github.com/golangee/forms-example/www/component/text"
-	. "github.com/golangee/forms-example/www/component/view"
-	"github.com/golangee/forms-example/www/dom"
+	"github.com/golangee/forms-example/www/forms/dom"
+	"github.com/golangee/forms-example/www/forms/router"
+	"github.com/golangee/forms-example/www/forms/tailwindcss/style"
+	"github.com/golangee/forms-example/www/forms/text"
+	. "github.com/golangee/forms-example/www/forms/view"
 	"github.com/golangee/forms-example/www/internal/build"
-	"github.com/golangee/forms-example/www/style"
+	text2 "github.com/golangee/forms-example/www/internal/tutorial/text"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
 )
 
 type Application struct {
-	logger log.Logger
+	router *router.Router
+	log    log.Logger
 }
 
 func NewApplication() *Application {
 	return &Application{
-		logger: log.NewLogger(ecs.Log("application")),
+		router: router.NewRouter().
+			AddRoute(text2.Path, apply(text2.FromQuery)).
+			SetUnhandledRouteAction(apply(func(query router.Query) Renderable {
+				return Text("unmatched route")
+			})),
+
+		log: log.NewLogger(ecs.Log("application")),
+	}
+}
+
+func apply(f func(query router.Query) Renderable) func(query router.Query) {
+	return func(query router.Query) {
+		RenderBody(f(query))
 	}
 }
 
 func (a *Application) Run() {
 
-	a.doStuff()
-	//a.doStuffWithComponents()
-
-	// keep alive
+	a.router.Start()
 	select {}
+}
+
+func navigate() {
+	defer dom.GlobalPanicHandler()
+
+	RenderBody(text2.NewContentView())
 }
 
 type MyCustomView struct {
@@ -55,7 +73,7 @@ func (a *Application) doStuffWithComponents() {
 			Class(style.Text3xl, style.BgBlack, style.TextBlue600),
 			DebugLog("compose: doStuff"),
 			AddEventListenerOnce(dom.EventRelease, func() {
-				a.logger.Print(ecs.Msg("released"))
+				a.log.Print(ecs.Msg("released"))
 			}),
 			Div(Text(fu)),
 			Span(text.NewText("bbbb"), Class(style.BgRed500)),
@@ -68,7 +86,7 @@ func (a *Application) doStuffWithComponents() {
 func (a *Application) doStuff() {
 	defer dom.GlobalPanicHandler()
 
-	a.logger.Print(ecs.Msg("application is running30"), log.V("build.commit", build.Commit))
+	a.log.Print(ecs.Msg("application is running30"), log.V("build.commit", build.Commit))
 
 	counter := 0
 	var myImg dom.Element
@@ -84,7 +102,7 @@ func (a *Application) doStuff() {
 					//	Self(&myImg),
 					AddClickListener(func() {
 
-						a.logger.Print(ecs.Msg("clicked it"))
+						a.log.Print(ecs.Msg("clicked it"))
 						myImg.SetClassName("rounded-xl")
 					}),
 				),
@@ -103,7 +121,7 @@ func (a *Application) doStuff() {
 							AddEventListenerOnce("click", func() {
 								counter++
 								nameText.SetTextContent("absolute nice")
-								a.logger.Print(ecs.Msg("only once clicked it"))
+								a.log.Print(ecs.Msg("only once clicked it"))
 								myImg.SetClassName("rounded-xl")
 								var failTest *int
 								*failTest = 5

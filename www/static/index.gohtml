@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 
     <link href="/assets/css/tailwind-2.0.1.min.css" rel="stylesheet">
+    <link href="/assets/css/forms.css" rel="stylesheet">
 
     <script src="wasm_exec.js?v={{.WasmBridgeVersion}}"></script>
     {{if .HotReload}}
@@ -53,7 +54,5 @@
     {{end}}
 
 </head>
-<body>
-{{.Body}}
-</body>
+<body>{{- .Body -}}</body>
 </html>
