@@ -1,16 +1,50 @@
 :root {
-    --color-primary: #5c6ac4;
-    --color-secondary: #ecc94b;
+    --color-primary: 27, 140, 48;
+    --color-on-primary: #ffffff;
+
+    --color-secondary: #000000;
+    --color-on-secondary: #ecc94b;
+
+    --color-surface: #ffffff;
+    --color-on-surface: #000000;
+
+    --color-background: #ffffff;
+    --color-on-background: #000000;
+}
+
+.hover\:text-on-primary:hover {
+    --tw-text-opacity: 1;
+    color: var(--color-on-primary);
+}
+
+.hover\:bg-primary:hover {
+    --tw-text-opacity: 1;
+    background-color: rgba(var(--color-primary), var(--tw-bg-opacity));
+}
+
+.text-on-primary {
+    --tw-text-opacity: 1;
+    color: var(--color-on-primary);
 }
 
 .text-primary {
     --tw-text-opacity: 1;
-    color: var(--color-primary);
+    color: rgba(var(--color-primary), var(--tw-text-opacity));
 }
 
-.text-secondary {
+.text-on-secondary {
     --tw-text-opacity: 1;
-    color: var(--color-secondary);
+    color: var(--color-on-secondary);
+}
+
+.text-on-surface {
+    --tw-text-opacity: 1;
+    color: var(--color-on-surface);
+}
+
+.text-on-background {
+    --tw-text-opacity: 1;
+    color: var(--color-on-background);
 }
 
 .divide-primary {
@@ -33,12 +67,22 @@
 
 .bg-primary {
     --tw-bg-opacity: 1;
-    background-color: var(--color-primary);
+    background-color: rgba(var(--color-primary),var(--tw-bg-opacity));
 }
 
 .bg-secondary {
     --tw-bg-opacity: 1;
     background-color: var(--color-secondary);
+}
+
+.bg-surface {
+    --tw-bg-opacity: 1;
+    background-color: var(--color-surface);
+}
+
+.bg-background {
+    --tw-bg-opacity: 1;
+    background-color: var(--color-background);
 }
 
 
@@ -80,3 +124,5 @@
 .material-icons.md-text-xl {
     font-size: 48px;
 }
+
+

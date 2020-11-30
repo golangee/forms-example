@@ -33,7 +33,8 @@ func (n Element) GetTagName() string {
 }
 
 func (n Element) SetClassName(str string) Element {
-	n.val.Set("className", str)
+	//n.val.Set("className", str) // the property is not defined on non-html elements, like svg
+	n.SetAttribute("class", str)
 	return n
 }
 
@@ -72,9 +73,17 @@ func (n Element) String() string {
 	return n.val.Get("outerHTML").String()
 }
 
-// Set sets the javascript property
+// Set sets the javascript property. Most standard attributes have an according property.
+// See also https://javascript.info/dom-attributes-and-properties#html-attributes.
 func (n Element) Set(p string, x interface{}) Element {
 	n.val.Set(p, x)
+	return n
+}
+
+// SetAttribute sets the html attribute. There are attributes, which have no corresponding
+// javascript property. See https://javascript.info/dom-attributes-and-properties#html-attributes.
+func (n Element) SetAttribute(a string, x interface{}) Element {
+	n.val.Call("setAttribute", a, x)
 	return n
 }
 
@@ -93,13 +102,28 @@ func (n Element) Call(name string, args ...interface{}) Element {
 	return n
 }
 
+// The keydown event is fired when a key is pressed. See also
+// https://developer.mozilla.org/en-US/docs/Web/API/Document/keydown_event
+func (n Element) AddKeyListener(typ string,f func(keyCode int)) Releasable {
+	return n.addEventListener(typ, false, func(this js.Value, args []js.Value) interface{} {
+		f(args[0].Get("keyCode").Int())
+		return nil
+	})
+}
+
 // AddEventListener is internally very complex, because it keeps a global callback
 // reference to connect the wasm and the javascript context. The wasm side must keep
 // a global un-collectable function and the javascript side does the same. This makes
 // event handling currently very expensive. Always ensure that
 // you call Release on this Element to free all resources.
-func (n Element) AddEventListener(typ string, once bool, listener func()) Element {
+func (n Element) AddEventListener(typ string, once bool, listener func()) Releasable {
+	return n.addEventListener(typ,once, func(this js.Value, args []js.Value) interface{} {
+		listener()
+		return nil
+	})
+}
 
+func (n Element) addEventListener(typ string, once bool, listener func(this js.Value, args []js.Value) interface{}) Releasable {
 	defer GlobalPanicHandler()
 
 	alreadyReleased := false
@@ -119,12 +143,7 @@ func (n Element) AddEventListener(typ string, once bool, listener func()) Elemen
 
 	actualFunc = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		defer GlobalPanicHandler()
-
-		listener()
-		if once && !alreadyReleased {
-			unregisterJS()
-		}
-		return nil
+		return listener(this,args)
 	})
 
 	releaseFunc = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
@@ -139,7 +158,7 @@ func (n Element) AddEventListener(typ string, once bool, listener func()) Elemen
 	n.val.Call("addEventListener", EventRelease, releaseFunc, true)
 	n.val.Call("addEventListener", typ, actualFunc, once)
 
-	return n
+	return actualFunc // TODO actually we should also release the release-funcs
 }
 
 // Release is part of our custom lifecycle. We need a manual destructor, because we

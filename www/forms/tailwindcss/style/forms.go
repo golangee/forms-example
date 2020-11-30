@@ -1,14 +1,25 @@
 package style
 
 const (
-	TextPrimary     = "text-primary"
-	TextSecondary   = "text-secondary"
+	TextOnPrimary      = "text-on-primary"
+	TextPrimary      = "text-primary"
+	BgPrimary          = "bg-primary"
+	HoverBgPrimary     = "hover:bg-primary"
+	HoverTextOnPrimary = "hover:text-on-primary"
+
+	TextOnSecondary = "text-on-secondary"
+	BgSecondary     = "bg-secondary"
+
+	TextOnSurface = "text-on-surface"
+	BgSurface     = "bg-surface"
+
+	TextOnBackground = "text-on-surface"
+	BgBackground     = "bg-surface"
+
 	DividePrimary   = "divide-primary"
 	DivideSecondary = "divide-secondary"
 	RingPrimary     = "ring-primary"
 	RingSecondary   = "ring-secondary"
-	BgPrimary       = "bg-primary"
-	BgSecondary     = "bg-secondary"
 
 	MaterialIcons = "material-icons"
 )

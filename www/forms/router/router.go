@@ -156,8 +156,12 @@ func (r *Router) onFragmentChanged(path string, query url.Values) {
 }
 
 func (r *Router) Navigate(u *url.URL) {
-	// without posting into JS event loop, this seems to randomly deadlock (when passing logging mutex?)
+	Navigate(u.String())
+}
+
+// Navigate issues a navigation request to the window element.
+func Navigate(url string) {
 	dom.Post(func() {
-		dom.GetWindow().SetLocation(u.String())
+		dom.GetWindow().SetLocation(url)
 	})
 }
