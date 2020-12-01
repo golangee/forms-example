@@ -39,6 +39,11 @@ func (c *AppBar) SetIcon(node Renderable) *AppBar {
 	return c
 }
 
+func (c *AppBar) Self(ref **AppBar) *AppBar {
+	*ref = c
+	return c
+}
+
 // SetTitle sets a Node as the entry right of the Icon.
 func (c *AppBar) SetTitle(node Renderable) *AppBar {
 	c.title = node
@@ -74,13 +79,13 @@ func (c *AppBar) Close() *AppBar {
 
 func (c *AppBar) Render() Node {
 	return Div(
-		Nav(Class("flex fixed w-full items-center justify-between px-6 h-16 bg-primary text-on-primary border-b border-gray-200 z-10"),
+		Nav(Class("flex fixed w-full items-center justify-between px-6 h-12 bg-primary text-on-primary border-b border-gray-200 z-10"),
 
 			// menu and logo
 			Div(Class("flex items-center"),
 
 				// burger menu button
-				Button(Class("mr-2 focus:outline-none"), AriaLabel("Open Menu"),
+				Button(Class("focus:outline-none"), AriaLabel("Open Menu"),
 					AddClickListener(c.isOpen.Toggle),
 					Svg(
 						Class("w-8 h-8"),
