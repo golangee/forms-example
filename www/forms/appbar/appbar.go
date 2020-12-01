@@ -3,6 +3,7 @@ package appbar
 import (
 	"github.com/golangee/forms-example/www/forms/property"
 	. "github.com/golangee/forms-example/www/forms/view"
+	. "github.com/golangee/forms-example/www/forms/view/svg"
 )
 
 // The AppBar provides a drawer area (side menu) at the left and a toolbar area at the top. It has only limited

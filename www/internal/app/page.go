@@ -45,10 +45,11 @@ func (a *Application) page(q router.Query, content Renderable) Renderable {
 				}),
 			)),
 
+
 		Div(Class("container mx-auto pt-20 pb-8 px-6 grid md:grid-cols-2 gap-6 grid-cols-1 max-w-5xl"),
 			Div(
 				Div(Class("border-l-8 p-6 rounded-lg hover:border-primary bg-gray-100 transition-colors"),
-					P(Class("text-sm font-medium pb-2"), Text("Step 1")),
+					P(Class("text-sm font-medium pb-2"), Text("Hello Alex")),
 					P(Text("Open Goland and either click Create a new Goland project in Goland’s startup window, or choose File > New > Project.")),
 				),
 			),

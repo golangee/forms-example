@@ -71,6 +71,17 @@ func Nav(e ...Renderable) Node {
 	return Element("nav", e...)
 }
 
+// Yield is a convenience operator to apply or insert multiple renderables as one, especially useful if one
+// ever needs to evaluate or append multiple renderables without a container.
+func Yield(r ...Renderable) Renderable {
+	return ModifierFunc(func(e dom.Element) {
+		for _, renderable := range r {
+			WithElement(e, renderable)
+		}
+	})
+}
+
+// Join is a convenience operator to merge 1+n renderables into a common slice.
 func Join(r Renderable, other ...Renderable) []Renderable {
 	tmp := make([]Renderable, 0, len(other)+1)
 	tmp = append(tmp, r)
@@ -217,6 +228,10 @@ func A(mods ...Renderable) Node {
 	return Element("a", mods...)
 }
 
+func Em(mods ...Renderable) Node {
+	return Element("em", mods...)
+}
+
 func Alt(a string) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		e.Set("alt", a)
@@ -323,7 +338,7 @@ func ForEach(len int, f func(i int) Renderable) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		for i := 0; i < len; i++ {
 			x := f(i)
-			WithElement(e,x).Element()
+			WithElement(e, x).Element()
 			/*switch t := x.(type) {
 			case Node:
 				e.AppendElement(t.Element())

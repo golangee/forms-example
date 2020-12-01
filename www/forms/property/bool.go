@@ -11,6 +11,12 @@ type Bool struct {
 	Property
 }
 
+func NewBool(value bool) *Bool {
+	b := &Bool{}
+	b.Set(value)
+	return b
+}
+
 // Set updates the value and notifies each registered observer.
 func (s *Bool) Set(v bool) {
 	s.Property.Set(v)

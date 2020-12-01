@@ -3,10 +3,10 @@ package app
 import (
 	"github.com/golangee/forms-example/www/forms/router"
 	. "github.com/golangee/forms-example/www/forms/view"
-	"github.com/golangee/forms-example/www/internal/tutorial/01-helloworld"
-	"github.com/golangee/forms-example/www/internal/tutorial/02-hellohtml"
-	"github.com/golangee/forms-example/www/internal/tutorial/03-helloparam"
-	"github.com/golangee/forms-example/www/internal/tutorial/04-helloproperty"
+	"github.com/golangee/forms-example/www/internal/tutorial/01-hello/01-helloworld"
+	"github.com/golangee/forms-example/www/internal/tutorial/01-hello/02-hellohtml"
+	"github.com/golangee/forms-example/www/internal/tutorial/01-hello/03-helloparam"
+	"github.com/golangee/forms-example/www/internal/tutorial/01-hello/04-helloproperty"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
 )

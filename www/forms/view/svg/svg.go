@@ -1,6 +1,9 @@
-package view
+package svg
 
-import "github.com/golangee/forms-example/www/forms/dom"
+import (
+	"github.com/golangee/forms-example/www/forms/dom"
+	. "github.com/golangee/forms-example/www/forms/view"
+)
 
 func Svg(e ...Renderable) Node {
 	return ElementNS("http://www.w3.org/2000/svg", "svg", e...)
