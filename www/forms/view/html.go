@@ -63,6 +63,10 @@ func Div(e ...Renderable) Node {
 	return Element("div", e...)
 }
 
+func Hr(e ...Renderable) Node {
+	return Element("hr", e...)
+}
+
 func Button(e ...Renderable) Node {
 	return Element("button", e...)
 }
@@ -161,9 +165,13 @@ func WithModifiers(m ...Modifier) Modifier {
 func If(p *property.Bool, pos, neg Modifier) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		if p.Get() {
-			pos.Modify(e)
+			if pos!=nil{
+				pos.Modify(e)
+			}
 		} else {
-			neg.Modify(e)
+			if neg!=nil{
+				neg.Modify(e)
+			}
 		}
 
 		h := p.Observe(func(old, new bool) {

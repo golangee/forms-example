@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/golangee/forms-example/www/forms/ico"
 	"github.com/golangee/forms-example/www/forms/material/icon"
+	"github.com/golangee/forms-example/www/forms/property"
 	"github.com/golangee/forms-example/www/forms/router"
 	. "github.com/golangee/forms-example/www/forms/view"
 	"github.com/golangee/forms-example/www/internal/index"
@@ -31,10 +32,12 @@ func tutorialOverview(q router.Query) Renderable {
 				),
 
 				// content
-				Div(Class("flex-1 md:rounded-t-xl p-4 md:p-12 mb-20"), BackgroundColor("#191919"),
+				Div(Class("mb-20"),
 					ForEach(len(index.Tutorial.Fragments), func(i int) Renderable {
 						chapter := index.Tutorial.Fragments[i]
-						return Div(
+						return Div(Class("flex-1 p-4 md:p-12 mb-1"), BackgroundColor("#191919"),
+							If(property.NewBool(i == 0), AddClass("md:rounded-t-xl"), nil),
+							If(property.NewBool(i == len(index.Tutorial.Fragments)-1), AddClass("md:rounded-b-xl"), nil),
 							Div(Class("grid md:grid-cols-3 grid-cols-1 gap-12 mb-12"),
 								Img(Class("md:col-span-1 md:object-cover md:h-48"), Src(chapter.Teaser[0].File)),
 								Div(Class("md:col-span-2"),

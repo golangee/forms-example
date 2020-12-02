@@ -1,4 +1,4 @@
-# Forms Essentials
+# Essentials
 
 ![teaser](teaser.jpg)
 
