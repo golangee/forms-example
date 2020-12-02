@@ -3,10 +3,10 @@ package app
 import (
 	"github.com/golangee/forms-example/www/forms/router"
 	. "github.com/golangee/forms-example/www/forms/view"
-	"github.com/golangee/forms-example/www/internal/tutorial/01-hello/01-helloworld"
-	"github.com/golangee/forms-example/www/internal/tutorial/01-hello/02-hellohtml"
-	"github.com/golangee/forms-example/www/internal/tutorial/01-hello/03-helloparam"
-	"github.com/golangee/forms-example/www/internal/tutorial/01-hello/04-helloproperty"
+	t01helloworld "github.com/golangee/forms-example/www/internal/01-tutorial-forms/01-chapter-essentials/01-section-setup/01-helloworld"
+	t02hellohtml "github.com/golangee/forms-example/www/internal/01-tutorial-forms/01-chapter-essentials/02-section-hello/02-hellohtml"
+	t03helloparam "github.com/golangee/forms-example/www/internal/01-tutorial-forms/01-chapter-essentials/02-section-hello/03-helloparam"
+	t04helloproperty "github.com/golangee/forms-example/www/internal/01-tutorial-forms/01-chapter-essentials/03-section-component/04-helloproperty"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
 )
@@ -23,6 +23,7 @@ func NewApplication() *Application {
 	}
 
 	a.router.AddRoute("/", a.apply(a.index)).
+		AddRoute("/tutorials", a.apply(tutorialOverview)).
 		AddRoute(t01helloworld.Path, a.apply(t01helloworld.FromQuery)).
 		AddRoute(t02hellohtml.Path, a.apply(t02hellohtml.FromQuery)).
 		AddRoute(t03helloparam.Path, a.apply(t03helloparam.FromQuery)).

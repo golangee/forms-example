@@ -201,6 +201,14 @@ func PointerEvents(visibility string) Modifier {
 	})
 }
 
+// BackgroundColor sets the CSS style attribute background-color,
+// see also https://developer.mozilla.org/de/docs/Web/CSS/background-color.
+func BackgroundColor(color string) Modifier {
+	return ModifierFunc(func(e dom.Element) {
+		e.Style().SetProperty("background-color", color)
+	})
+}
+
 func Text(t string) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		//e.SetTextContent(t)

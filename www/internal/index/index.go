@@ -3,30 +3,10 @@ package index
 import (
 	"encoding/base64"
 	"encoding/json"
+	"github.com/golangee/forms-example/www/nestor"
 )
 
-
-type Tutorial struct {
-	Path string
-	Doc  string
-	Code string
-}
-
-type TutorialIndex struct {
-	Tutorials []Tutorial
-}
-
-func (t TutorialIndex) Find(path string) Tutorial {
-	for _, tutorial := range t.Tutorials {
-		if tutorial.Path == path {
-			return tutorial
-		}
-	}
-
-	return Tutorial{}
-}
-
-var Tutorials TutorialIndex
+var Tutorial nestor.Fragment
 
 func init() {
 	buf, err := base64.StdEncoding.DecodeString(tutorials)
@@ -34,8 +14,11 @@ func init() {
 		panic(err)
 	}
 
-	err = json.Unmarshal(buf, &Tutorials)
+	tmp := make([]nestor.Fragment, 0, 1)
+	err = json.Unmarshal(buf, &tmp)
 	if err != nil {
 		panic(err)
 	}
+
+	Tutorial = tmp[0]
 }

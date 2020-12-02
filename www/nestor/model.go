@@ -1,48 +1,71 @@
 package nestor
 
-import "time"
+import (
+	"strings"
+	"unicode"
+)
 
-// A Tutorial contains chapters of stuff.
-type Tutorial struct {
-	ID        string    // ID of this resource.
-	Title     string    // Title of the tutorial
-	Subtitle  string    // Subtitle to tease the tutorial.
-	TeaserUrl string    // TeaserUrl to an image.
-	Chapters  []Chapter // Chapters provide the actual content.
-}
-
-// A Chapters consists of sections.
-type Chapter struct {
-	ID        string // ID of this resource.
-	Title     string // Title of the chapter.
-	Subtitle  string // Subtitle to tease the chapter.
-	TeaserUrl string // TeaserUrl to a header section image.
-	Sections  []Section
-}
-
-// A Section consistens of steps.
-type Section struct {
-	ID                      string        // ID of this resource.
-	Objective               string        // Objective or goal to learn
-	Description             string        // Description about the tutorial
-	TeaserUrl               string        // TeaserUrl to a header section image.
-	EstimatedDuration       time.Duration // EstimatedDuration to work through this tutorial.
-	ProjectFilesDownloadUrl string        // ProjectFilesDownloadUrl to grab a zip file of ready-to-use material.
-	Steps                   []Step
-}
-
-// A Step just has a left hand side (title and description) and a right hand side of multiple contents.
-type Step struct {
-	ID          string // ID of this resource.
+// A Fragment is a semantically parsed "tutorial.md" file.
+type Fragment struct {
 	Title       string
-	Description string
-	Content     Content
+	Teaser      []*Attachment `json:",omitempty"`
+	Body        string
+	Attachments []*Attachment `json:",omitempty"`
+	Fragments   []*Fragment  `json:",omitempty"` // Fragments contain more children fragments
 }
 
-// Content tuple, none or all fields may have been set.
-type Content struct {
-	Code     string // Code to show with line numbers.
-	ImageUrl string // ImageUrl to show how it should look like.
-	VideoUrl string // VideoUrl to show how it should behave or how to achieve something.
-	LiveUrl  string // LiveUrl for an iframe to show compiled result.
+// ID creates a string id from the title.
+func (f *Fragment) ID() string {
+	return strings.ToLower(text2GoIdentifier(f.Title))
+}
+
+// AttachmentType denotes the semantically parsed element.
+type AttachmentType string
+
+const (
+	AtImage    AttachmentType = "image"
+	AtVideo    AttachmentType = "video"
+	AtSource   AttachmentType = "source"
+	AtIFrame   AttachmentType = "iframe"
+	AtDownload AttachmentType = "download"
+)
+
+// Attachment represents an entry of the Attachment section.
+type Attachment struct {
+	Type AttachmentType
+	// Title may be only non-empty for image or video
+	Title string
+
+	// Raw is usually a relative or absolute URL. The semantic is duck-typed, so if it can be found nearby
+	// locally, File contains the absolute Filepath.
+	Raw string
+
+	// File contains the absolute local filepath, if available.
+	File string
+}
+
+func text2GoIdentifier(p string) string {
+	sb := &strings.Builder{}
+	upCase := true
+	written := 0
+	for _, r := range p {
+		if !((r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9')) {
+			upCase = true
+			continue
+		}
+
+		if r >= '0' && r <= '9' && written == 0 {
+			sb.WriteRune('S')
+		}
+
+		written++
+		if upCase {
+			sb.WriteRune(unicode.ToUpper(r))
+			upCase = false
+		} else {
+			sb.WriteRune(r)
+		}
+	}
+
+	return sb.String()
 }

@@ -14,5 +14,5 @@ func NewIcon(name string) *Icon {
 }
 
 func (c *Icon) Render() Node {
-	return I(Class("material-icons align-top"), Text(c.name))
+	return I(Class("material-icons align-sub"), Text(c.name))
 }

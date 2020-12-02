@@ -96,6 +96,9 @@
     background-color: var(--color-background);
 }
 
+.align-sub {
+    vertical-align: sub;
+}
 
 @font-face {
     font-family: 'Material Icons';

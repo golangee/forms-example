@@ -80,7 +80,7 @@ func (c *AppBar) Close() *AppBar {
 
 func (c *AppBar) Render() Node {
 	return Div(
-		Nav(Class("flex fixed w-full items-center justify-between px-6 h-12 bg-primary text-on-primary border-b border-gray-200 z-10"),
+		Nav(Class("flex fixed w-full items-center justify-between px-6 h-12 bg-primary text-on-primary shadow z-10"),
 
 			// menu and logo
 			Div(Class("flex items-center"),
