@@ -80,7 +80,8 @@ func Nav(e ...Renderable) Node {
 func Yield(r ...Renderable) Renderable {
 	return ModifierFunc(func(e dom.Element) {
 		for _, renderable := range r {
-			WithElement(e, renderable)
+			log.NewLogger().Print(ecs.Msg("wtf->" + fmt.Sprint(renderable, reflect.TypeOf(renderable))))
+			WithElement(e, renderable).Element()
 		}
 	})
 }
@@ -122,7 +123,10 @@ func AddClass(classes ...string) Modifier {
 			if strings.ContainsRune(class, ' ') {
 				// separate it
 				for _, s := range strings.Split(class, " ") {
-					e.AddClass(s)
+					s = strings.TrimSpace(s)
+					if s != "" {
+						e.AddClass(s)
+					}
 				}
 			} else {
 				e.AddClass(class)
@@ -165,11 +169,11 @@ func WithModifiers(m ...Modifier) Modifier {
 func If(p *property.Bool, pos, neg Modifier) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		if p.Get() {
-			if pos!=nil{
+			if pos != nil {
 				pos.Modify(e)
 			}
 		} else {
-			if neg!=nil{
+			if neg != nil {
 				neg.Modify(e)
 			}
 		}
@@ -219,7 +223,6 @@ func BackgroundColor(color string) Modifier {
 
 func Text(t string) Modifier {
 	return ModifierFunc(func(e dom.Element) {
-		//e.SetTextContent(t)
 		e.AppendTextNode(t)
 	})
 }

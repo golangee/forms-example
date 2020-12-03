@@ -1,4 +1,4 @@
-# Setup
+# Install
 
 ![teaser](teaser.jpg)
 

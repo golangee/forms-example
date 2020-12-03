@@ -53,7 +53,7 @@ func tutorialOverview(q router.Query) Renderable {
 								return Div(Class(),
 									P(Class("text-gray-400 flex"),
 										Span(ico.NewIcon(icon.GroupWork)),
-										Span(Class("text-blue-400 pl-6 text-lg"), Text(section.Title)),
+										Span(Class("text-blue-400 pl-6 text-lg"), A(Href("#/"+index.Tutorial.ID()+"/"+chapter.ID()+"/"+section.ID()), Text(section.Title))),
 										Span(Class("float-right flex-auto text-right"), ico.NewIcon(icon.Timer), Text("00min")),
 									),
 								)

@@ -1,4 +1,4 @@
-# Forms Setup
+# Setup
 
 ![teaser](teaser.jpg)
 
