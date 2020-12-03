@@ -104,7 +104,7 @@ func (n Element) Call(name string, args ...interface{}) Element {
 
 // The keydown event is fired when a key is pressed. See also
 // https://developer.mozilla.org/en-US/docs/Web/API/Document/keydown_event
-func (n Element) AddKeyListener(typ string,f func(keyCode int)) Releasable {
+func (n Element) AddKeyListener(typ string, f func(keyCode int)) Releasable {
 	return n.addEventListener(typ, false, func(this js.Value, args []js.Value) interface{} {
 		f(args[0].Get("keyCode").Int())
 		return nil
@@ -117,7 +117,8 @@ func (n Element) AddKeyListener(typ string,f func(keyCode int)) Releasable {
 // event handling currently very expensive. Always ensure that
 // you call Release on this Element to free all resources.
 func (n Element) AddEventListener(typ string, once bool, listener func()) Releasable {
-	return n.addEventListener(typ,once, func(this js.Value, args []js.Value) interface{} {
+	return n.addEventListener(typ, once, func(this js.Value, args []js.Value) interface{} {
+		args[0].Call("stopPropagation")
 		listener()
 		return nil
 	})
@@ -134,8 +135,8 @@ func (n Element) addEventListener(typ string, once bool, listener func(this js.V
 
 		if !alreadyReleased {
 			alreadyReleased = true
-			n.val.Call("removeEventListener", typ, actualFunc, once)
-			n.val.Call("removeEventListener", EventRelease, releaseFunc, true)
+			n.val.Call("removeEventListener", typ, actualFunc)
+			n.val.Call("removeEventListener", EventRelease, releaseFunc)
 			actualFunc.Release()
 			releaseFunc.Release()
 		}
@@ -143,7 +144,11 @@ func (n Element) addEventListener(typ string, once bool, listener func(this js.V
 
 	actualFunc = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		defer GlobalPanicHandler()
-		return listener(this,args)
+
+		if once {
+			unregisterJS()
+		}
+		return listener(this, args)
 	})
 
 	releaseFunc = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
@@ -155,8 +160,8 @@ func (n Element) addEventListener(typ string, once bool, listener func(this js.V
 		return nil
 	})
 
-	n.val.Call("addEventListener", EventRelease, releaseFunc, true)
-	n.val.Call("addEventListener", typ, actualFunc, once)
+	n.val.Call("addEventListener", EventRelease, releaseFunc)
+	n.val.Call("addEventListener", typ, actualFunc)
 
 	return actualFunc // TODO actually we should also release the release-funcs
 }
@@ -173,6 +178,8 @@ func (n Element) Release() {
 
 	event := js.Global().Get("Event").New(EventRelease)
 	n.val.Call("dispatchEvent", event)
+
+	//	log.NewLogger().Print(ecs.Msg("releasing: "+n.String()))
 }
 
 func (n Element) AddReleaseListener(f func()) Element {
@@ -180,15 +187,17 @@ func (n Element) AddReleaseListener(f func()) Element {
 	fun = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		defer GlobalPanicHandler()
 
+		args[0].Call("stopPropagation")
 		f()
 
-		// TODO not sure if 'once' is used correctly, but without removing, we get weired warnings
-		n.val.Call("removeEventListener", EventRelease, fun, true)
+		n.val.Call("removeEventListener", EventRelease, fun)
 		fun.Release()
+
+		//log.NewLogger().Print(ecs.Msg("plain releaser listener releasing: "+n.String()))
 		return nil
 	})
 
-	n.val.Call("addEventListener", EventRelease, fun, true)
+	n.val.Call("addEventListener", EventRelease, fun)
 	return n
 }
 

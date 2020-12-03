@@ -63,6 +63,10 @@ func Div(e ...Renderable) Node {
 	return Element("div", e...)
 }
 
+func IFrame(e ...Renderable) Node {
+	return Element("iframe", e...)
+}
+
 func Hr(e ...Renderable) Node {
 	return Element("hr", e...)
 }
@@ -80,7 +84,6 @@ func Nav(e ...Renderable) Node {
 func Yield(r ...Renderable) Renderable {
 	return ModifierFunc(func(e dom.Element) {
 		for _, renderable := range r {
-			log.NewLogger().Print(ecs.Msg("wtf->" + fmt.Sprint(renderable, reflect.TypeOf(renderable))))
 			WithElement(e, renderable).Element()
 		}
 	})
@@ -190,34 +193,10 @@ func If(p *property.Bool, pos, neg Modifier) Modifier {
 	})
 }
 
-// Display sets the css style attribute "display".
-func Display(display string) Modifier {
+// Style sets a single CSS property.
+func Style(property, value string) Modifier {
 	return ModifierFunc(func(e dom.Element) {
-		e.Style().SetProperty("display", display)
-	})
-}
-
-// Visibility sets the css style attribute "visibility".
-// See also https://developer.mozilla.org/de/docs/Web/CSS/visibility
-func Visibility(visibility string) Modifier {
-	return ModifierFunc(func(e dom.Element) {
-		e.Style().SetProperty("visibility", visibility)
-	})
-}
-
-// PointerEvents sets the CSS style attribute pointer-events,
-// see also https://developer.mozilla.org/de/docs/Web/CSS/pointer-events.
-func PointerEvents(visibility string) Modifier {
-	return ModifierFunc(func(e dom.Element) {
-		e.Style().SetProperty("pointer-events", visibility)
-	})
-}
-
-// BackgroundColor sets the CSS style attribute background-color,
-// see also https://developer.mozilla.org/de/docs/Web/CSS/background-color.
-func BackgroundColor(color string) Modifier {
-	return ModifierFunc(func(e dom.Element) {
-		e.Style().SetProperty("background-color", color)
+		e.Style().SetProperty(property, value)
 	})
 }
 

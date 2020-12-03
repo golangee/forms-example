@@ -11,7 +11,7 @@ type Fragment struct {
 	Teaser      []*Attachment `json:",omitempty"`
 	Body        string
 	Attachments []*Attachment `json:",omitempty"`
-	Fragments   []*Fragment  `json:",omitempty"` // Fragments contain more children fragments
+	Fragments   []*Fragment   `json:",omitempty"` // Fragments contain more children fragments
 }
 
 // ID creates a string id from the title.

@@ -16,7 +16,6 @@ type Resource interface {
 //  2. because there is no overloading, we cannot give a hint, to implement it correctly
 type View struct {
 	stateful *Stateful
-	tag      string
 }
 
 // nodeOrModifierOrComponent is our private marker contract.
@@ -41,14 +40,4 @@ func (v *View) Invalidate() {
 // Observe registers a callback which is invoked, when Invalidate has been called.
 func (v *View) Observe(f func()) Handle {
 	return v.getStateful().Observe(f)
-}
-
-//deprecated: TODO only a debug feature?
-func (v *View) SetTag(tag string) {
-	v.tag = tag
-}
-
-// String returns a human debuggable name.
-func (v *View) String() string {
-	return "View-" + v.tag
 }

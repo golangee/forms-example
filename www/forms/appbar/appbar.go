@@ -119,11 +119,11 @@ func (c *AppBar) Render() Node {
 
 				If(&c.isOpen,
 					WithModifiers(
-						Visibility("visible"),
+						Style("visibility", "visible"),
 						AddClass("opacity-50"),
 					),
 					WithModifiers(
-						Visibility("hidden"),
+						Style("visibility", "hidden"),
 						RemoveClass("opacity-50"),
 					),
 				),

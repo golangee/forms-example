@@ -11,7 +11,7 @@ import (
 )
 
 func tutorialOverview(q router.Query) Renderable {
-	return Div(Class("pt-20"), BackgroundColor("#191919"),
+	return Div(Class("pt-20"), Style("background-color", "#191919"),
 		Div(Class("container mx-auto max-w-4xl text-center text-white p-4"),
 			P(Class("text-5xl"), Text(index.Tutorial.Title)),
 			P(Class("text-xl pt-6"), Text(index.Tutorial.Body)),
@@ -35,7 +35,7 @@ func tutorialOverview(q router.Query) Renderable {
 				Div(Class("mb-20"),
 					ForEach(len(index.Tutorial.Fragments), func(i int) Renderable {
 						chapter := index.Tutorial.Fragments[i]
-						return Div(Class("flex-1 p-4 md:p-12 mb-1"), BackgroundColor("#191919"),
+						return Div(Class("flex-1 p-4 md:p-12 mb-1"), Style("background-color", "#191919"),
 							If(property.NewBool(i == 0), AddClass("md:rounded-t-xl"), nil),
 							If(property.NewBool(i == len(index.Tutorial.Fragments)-1), AddClass("md:rounded-b-xl"), nil),
 							Div(Class("grid md:grid-cols-3 grid-cols-1 gap-12 mb-12"),

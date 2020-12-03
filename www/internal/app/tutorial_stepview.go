@@ -1,8 +1,11 @@
 package app
 
 import (
+	"github.com/golangee/forms-example/www/forms/http"
+	"github.com/golangee/forms-example/www/forms/progress"
 	"github.com/golangee/forms-example/www/forms/router"
 	"github.com/golangee/forms-example/www/forms/tabs"
+	"github.com/golangee/forms-example/www/forms/text"
 	. "github.com/golangee/forms-example/www/forms/view"
 	"github.com/golangee/forms-example/www/internal/index"
 	"github.com/golangee/forms-example/www/nestor"
@@ -46,7 +49,14 @@ func tutorialStepview(q router.Query) Renderable {
 				Div(
 					tabs.NewTabs().With(func(c *tabs.Tabs) {
 						for _, at := range step.Attachments {
-							c.AddPane(Text(at.Title), Text(at.File))
+							title := at.Title
+							switch at.Type {
+							case nestor.AtIFrame:
+								title = "Preview"
+							case nestor.AtSource:
+								title = "Source"
+							}
+							c.AddPane(Text(title), attachmentPane(at))
 						}
 					}),
 
@@ -56,4 +66,38 @@ func tutorialStepview(q router.Query) Renderable {
 
 		}),
 	)
+}
+
+func attachmentPane(at *nestor.Attachment) Renderable {
+	switch at.Type {
+	case nestor.AtIFrame:
+		return IFrame(
+			Src(at.File),
+		)
+	case nestor.AtImage:
+		return Img(Src(at.File))
+	case nestor.AtSource:
+		textView := text.NewText("loading")
+		pg := progress.NewInfiniteCircle()
+		pg.VisibleProperty().Set(true)
+
+		http.GetText(at.File, func(res string, err error) {
+			if err != nil {
+				textView.SetText(err.Error())
+				return
+			}
+
+			pg.VisibleProperty().Set(false)
+			textView.SetText(res)
+		})
+		return Div(Class("max-w-prose overflow-x-auto"),
+			Span(If(pg.VisibleProperty(), Style("display", "inherit"), Style("display", "none")),
+				pg,
+			),
+
+			Pre(Code(textView)),
+		)
+
+	}
+	return Div(Text("type not implemented: " + string(at.Type)))
 }
