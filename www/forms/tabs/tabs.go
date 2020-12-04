@@ -50,15 +50,23 @@ func (c *Tabs) Render() Node {
 
 		ForEach(len(c.tabPanes), func(i int) Renderable {
 			tab := c.tabPanes[i]
-			return Div(Class("pt-2 ease-in-out transition-opacity duration-500 opacity-0 absolute"),
+			return Div(Class("pt-2 ease-in-out transition-opacity duration-500 opacity-0"), // don't use absolute, because it breaks the layout system
 				If(&tab.active,
 					WithModifiers(
 						Style("visibility", "visible"),
 						AddClass("opacity-100"),
+						RemoveClass("h-0"),
+						Style("line-height","inherit"),
+						Style("overflow","inherit"),
+
 					),
 					WithModifiers(
 						Style("visibility", "hidden"),
 						RemoveClass("opacity-100"),
+						AddClass("h-0"),
+						Style("line-height","0"),
+						Style("overflow","hidden"),
+
 					)),
 				tab.content,
 			)

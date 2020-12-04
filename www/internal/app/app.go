@@ -4,6 +4,7 @@ import (
 	"github.com/golangee/forms-example/www/forms/router"
 	. "github.com/golangee/forms-example/www/forms/view"
 	"github.com/golangee/forms-example/www/internal/index"
+	c01s01s01 "github.com/golangee/forms-example/www/internal/tutorial-forms/01-chapter-setup/01-section-setup/01-setup"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
 )
@@ -20,6 +21,7 @@ func NewApplication() *Application {
 	}
 
 	a.router.AddRoute("/", a.apply(tutorialOverview))
+	a.router.AddRoute("/introducingforms/setup/install/step1/00-setup", a.applyNone(c01s01s01.Show))
 
 	for _, chapter := range index.Tutorial.Fragments {
 		for _, section := range chapter.Fragments {
@@ -34,6 +36,12 @@ func NewApplication() *Application {
 		}))
 
 	return a
+}
+
+func (a *Application) applyNone(f func(query router.Query) Renderable) func(query router.Query) {
+	return func(query router.Query) {
+		RenderBody(f(query))
+	}
 }
 
 func (a *Application) apply(f func(query router.Query) Renderable) func(query router.Query) {

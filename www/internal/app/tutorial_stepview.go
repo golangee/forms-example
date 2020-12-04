@@ -1,11 +1,11 @@
 package app
 
 import (
+	"github.com/golangee/forms-example/www/forms/highlightjs"
 	"github.com/golangee/forms-example/www/forms/http"
 	"github.com/golangee/forms-example/www/forms/progress"
 	"github.com/golangee/forms-example/www/forms/router"
 	"github.com/golangee/forms-example/www/forms/tabs"
-	"github.com/golangee/forms-example/www/forms/text"
 	. "github.com/golangee/forms-example/www/forms/view"
 	"github.com/golangee/forms-example/www/internal/index"
 	"github.com/golangee/forms-example/www/nestor"
@@ -71,31 +71,36 @@ func tutorialStepview(q router.Query) Renderable {
 func attachmentPane(at *nestor.Attachment) Renderable {
 	switch at.Type {
 	case nestor.AtIFrame:
-		return IFrame(
-			Src(at.File),
+		return Div(Class("shadow rounded-md border mt-4 m-auto"), Style("width", "278px"), Style("height", "602px"),
+			IFrame(
+				Src("/#"+at.File),
+			),
+
 		)
 	case nestor.AtImage:
 		return Img(Src(at.File))
 	case nestor.AtSource:
-		textView := text.NewText("loading")
+		codeView := highlightjs.NewCode()
+		codeView.LangProperty().Set("language-go")
 		pg := progress.NewInfiniteCircle()
 		pg.VisibleProperty().Set(true)
 
 		http.GetText(at.File, func(res string, err error) {
 			if err != nil {
-				textView.SetText(err.Error())
+				codeView.CodeProperty().Set(err.Error())
 				return
 			}
 
 			pg.VisibleProperty().Set(false)
-			textView.SetText(res)
+			codeView.CodeProperty().Set(res)
 		})
-		return Div(Class("max-w-prose overflow-x-auto"),
+
+		return Div(Class("max-w-prose overflow-x-auto bg-gray-100"),
 			Span(If(pg.VisibleProperty(), Style("display", "inherit"), Style("display", "none")),
 				pg,
 			),
 
-			Pre(Code(textView)),
+			codeView,
 		)
 
 	}
