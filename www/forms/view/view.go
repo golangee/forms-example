@@ -15,7 +15,8 @@ type Resource interface {
 //  1. a View for it alone would be a Component, however without any useable benefit
 //  2. because there is no overloading, we cannot give a hint, to implement it correctly
 type View struct {
-	stateful *Stateful
+	stateful      *Stateful
+	postModifiers []Modifier
 }
 
 // nodeOrModifierOrComponent is our private marker contract.
@@ -40,4 +41,12 @@ func (v *View) Invalidate() {
 // Observe registers a callback which is invoked, when Invalidate has been called.
 func (v *View) Observe(f func()) Handle {
 	return v.getStateful().Observe(f)
+}
+
+func (v *View) getPostModifiers() []Modifier {
+	return v.postModifiers
+}
+
+func (v *View) setPostModifiers(mods []Modifier) {
+	v.postModifiers = mods
 }

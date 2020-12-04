@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 const (
@@ -165,6 +166,12 @@ func GoEnv(name string) (string, error) {
 
 // CopyFile copies a file from src to dst
 func CopyFile(dst, src string) error {
+	defer func() {
+		// we have sometimes the issue, that the dev-server does not recognize rewritten files
+		now := time.Now()
+		_ = os.Chtimes(dst, now, now)
+	}()
+
 	df, err := os.OpenFile(dst, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, os.ModePerm)
 	if err != nil {
 		return fmt.Errorf("unable to open dst file: %w", err)

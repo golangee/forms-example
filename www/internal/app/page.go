@@ -29,10 +29,12 @@ func (a *Application) page(q router.Query, content Renderable) Renderable {
 							bar.Close()
 							router.Navigate("#" + routes[i].Path)
 						})
+
 						if q.Path() == routes[i].Path {
 							return Span(Class("bg-primary bg-opacity-10 w-full"), btn) //bg-primary bg-opacity-10 bg-indigo-600 bg-opacity-10
 						}
-						return btn
+
+						return With(btn, AddClass("w-full"))
 					}),
 
 				),
@@ -40,9 +42,14 @@ func (a *Application) page(q router.Query, content Renderable) Renderable {
 
 			SetDrawerFooter(Div(
 				Class("fixed bottom-0 w-full"),
-				button.NewIconTextButton(icon.OpenInBrowser, "what is worldiety?", func() {
-					router.Navigate("https://worldiety.de")
-				}),
+				With(
+					button.NewIconTextButton(icon.OpenInBrowser, "what is worldiety?", func() {
+						router.Navigate("https://worldiety.de")
+					}),
+
+
+					AddClass("w-full"),
+				),
 			)),
 
 		content,

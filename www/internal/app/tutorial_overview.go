@@ -14,7 +14,7 @@ func tutorialOverview(q router.Query) Renderable {
 	return Div(Class("pt-20"), Style("background-color", "#191919"),
 		Div(Class("container mx-auto max-w-4xl text-center text-white p-4"),
 			P(Class("text-5xl"), Text(index.Tutorial.Title)),
-			P(Class("text-xl pt-6"), Text(index.Tutorial.Body)),
+			P(Class("text-xl pt-6"), InnerHTML(index.Tutorial.Body)),
 			P(Class("text-xl pt-6 text-gray-400"), ico.NewIcon(icon.Timer), Span(Text("0hr 00min")), Span(Text(" ")), Span(Class("text-sm"), Text("Estimated Time"))),
 			Img(Class("shadow-lg rounded-xl max-w-full h-auto align-middle border-none my-20"), Src(index.Tutorial.Teaser[0].File)),
 
@@ -43,7 +43,7 @@ func tutorialOverview(q router.Query) Renderable {
 								Div(Class("md:col-span-2"),
 									P(Class("text-lg text-gray-400"), Text("Chapter "+strconv.Itoa(i+1))),
 									P(Class("text-xl"), Text(chapter.Title)),
-									P(Class("md:col-span-2 text-gray-400"), Text(chapter.Body)),
+									P(Class("md:col-span-2 text-gray-400"), InnerHTML(chapter.Body)),
 
 								),
 							),

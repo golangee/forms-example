@@ -22,6 +22,11 @@ func (n Element) SetTextContent(v string) Element {
 	return n
 }
 
+func (n Element) SetInnerHTML(v string) Element {
+	n.val.Set("innerHTML", v)
+	return n
+}
+
 func (n Element) AppendTextNode(t string) Element {
 	tn := GetWindow().Document().createTextNode(t)
 	n.val.Call("appendChild", tn)
@@ -213,6 +218,19 @@ func (n Element) HasClass(v string) bool {
 func (n Element) RemoveClass(v string) Element {
 	n.val.Get("classList").Call("remove", v)
 	return n
+}
+
+// Removes this Element from its parent and Release it. See also
+// https://developer.mozilla.org/de/docs/Web/API/ChildNode/remove.
+func (n Element) Remove() Element {
+	n.val.Call("remove")
+	n.Release()
+	return n
+}
+
+// LastChild returns last child node. See also https://developer.mozilla.org/de/docs/Web/API/Node/lastChild.
+func (n Element) LastChild() Element {
+	return newElement(n.val.Get("lastChild"))
 }
 
 // Equal has the Javascript == semantic on the Element (equal reference)

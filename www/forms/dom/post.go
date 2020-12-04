@@ -19,3 +19,4 @@ func SetTimeout(d time.Duration, f func()) {
 func Post(f func()) {
 	SetTimeout(0, f)
 }
+

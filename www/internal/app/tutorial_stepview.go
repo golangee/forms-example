@@ -33,7 +33,7 @@ func tutorialStepview(q router.Query) Renderable {
 		return Span(Text("section not found: " + q.Path()))
 	}
 
-	return Div(Class("container mx-auto pt-20 pb-8 px-6 grid md:grid-cols-2 gap-6 grid-cols-1 max-w-5xl"),
+	return Div(Class("container mx-auto pt-20 pb-8 px-6 grid md:grid-cols-2 gap-6 grid-cols-1 max-w-7xl"),
 		ForEach(len(sec.Fragments), func(i int) Renderable {
 			step := sec.Fragments[i]
 			return Yield(
@@ -41,7 +41,7 @@ func tutorialStepview(q router.Query) Renderable {
 				Div(
 					Div(Class("border-l-8 p-6 rounded-lg hover:border-primary bg-gray-100 transition-colors"),
 						P(Class("text-sm font-medium pb-2"), Text("Step "+strconv.Itoa(i+1))),
-						P(Text(step.Body)),
+						P(InnerHTML(step.Body)),
 					),
 				),
 
@@ -72,7 +72,7 @@ func attachmentPane(at *nestor.Attachment) Renderable {
 	switch at.Type {
 	case nestor.AtIFrame:
 		return Div(Class("shadow rounded-md border mt-4 m-auto"), Style("width", "278px"), Style("height", "602px"),
-			IFrame(
+			IFrame(Style("width", "278px"), Style("height", "602px"), //seems to be buggy, because the iframe ignores partially the outer size
 				Src("/#"+at.File),
 			),
 
@@ -81,7 +81,7 @@ func attachmentPane(at *nestor.Attachment) Renderable {
 		return Img(Src(at.File))
 	case nestor.AtSource:
 		codeView := highlightjs.NewCode()
-		codeView.LangProperty().Set("language-go")
+		codeView.LangProperty().Set("go")
 		pg := progress.NewInfiniteCircle()
 		pg.VisibleProperty().Set(true)
 
@@ -96,8 +96,12 @@ func attachmentPane(at *nestor.Attachment) Renderable {
 		})
 
 		return Div(Class("max-w-prose overflow-x-auto bg-gray-100"),
-			Span(If(pg.VisibleProperty(), Style("display", "inherit"), Style("display", "none")),
-				pg,
+			Div(Class("text-center"),
+				Span(Class("m-2"),
+					Style("display", "inline-block"),
+					If(pg.VisibleProperty(), Style("display", "inline-block"), Style("display", "none")),
+					pg,
+				),
 			),
 
 			codeView,

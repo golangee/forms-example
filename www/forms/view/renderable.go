@@ -20,6 +20,9 @@ type Component interface {
 	// Observe registers with the component which notifies for changes.
 	Observe(f func()) Handle
 	Renderable
+
+	getPostModifiers()[]Modifier
+	setPostModifiers(mods []Modifier)
 }
 
 // Render clears the body of the page and applies the given Renderable.

@@ -8,6 +8,6 @@ with [Go 1.15](https://golang.org/dl/). *Go* development is really fun with a go
 
 ![Download Go](how-to-click.png)
 
-[iframe](00-setup)
+[iframe](/c01s01s01)
 
 [source](component.go)

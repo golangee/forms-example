@@ -29,12 +29,18 @@ func WithElement(elem dom.Element, rm ...Renderable) Node {
 				t.Modify(elem)
 			case Component:
 				x := t.Render().Element()
+				for _, modifier := range t.getPostModifiers() {
+					modifier.Modify(x)
+				}
 				var observer func()
 				var xHandle Handle
 				observer = func() {
 					x.Release()
 					xHandle.Release()
 					newElem := t.Render().Element()
+					for _, modifier := range t.getPostModifiers() {
+						modifier.Modify(newElem)
+					}
 					x = x.ReplaceWith(newElem)
 					xHandle = t.Observe(observer)
 					x.AddReleaseListener(func() {
@@ -206,6 +212,12 @@ func Text(t string) Modifier {
 	})
 }
 
+func InnerHTML(t string) Modifier {
+	return ModifierFunc(func(e dom.Element) {
+		e.SetInnerHTML(t)
+	})
+}
+
 func Src(src string) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		e.Set("src", src)
@@ -215,6 +227,13 @@ func Src(src string) Modifier {
 func TabIndex(t string) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		e.SetAttribute("tabindex", t)
+	})
+}
+
+//TODO useful?
+func Focus() Modifier {
+	return ModifierFunc(func(e dom.Element) {
+		e.Call("focus")
 	})
 }
 
@@ -308,6 +327,13 @@ func Span(mods ...Renderable) Node {
 	return Element("span", mods...)
 }
 
+// With post-modifies the given component for each future rendering. TODO unclear if it would better fit as a method at View, to also support invalidation properly
+func With(r Component, mods ...Modifier) Component {
+	r.setPostModifiers(mods)
+	return r
+}
+
+/* TODO what is that use case?
 func With(f func() Renderable) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		x := f()
@@ -324,7 +350,7 @@ func With(f func() Renderable) Modifier {
 			panic(fmt.Sprint(e))
 		}
 	})
-}
+}*/
 
 func InsideDom(f func(e dom.Element)) Modifier {
 	return ModifierFunc(func(e dom.Element) {
@@ -368,7 +394,7 @@ func AddClickListener(f func()) Modifier {
 
 func AddKeyDownListener(f func(keyCode int)) Modifier {
 	return ModifierFunc(func(e dom.Element) {
-		e.AddKeyListener("keydown", f)
+		e.AddKeyListener("keyup", f)
 	})
 }
 

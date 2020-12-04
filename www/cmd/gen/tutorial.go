@@ -6,10 +6,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/golangee/forms-example/www/nestor"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/renderer/html"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const assetPrefix = "/assets/gen/"
@@ -44,6 +49,24 @@ func buildIndex(src, webDst string) error {
 
 func normalizeAndCopyFiles(ctxPath string, frags []*nestor.Fragment, dst string) error {
 	for _, frag := range frags {
+		buf := &bytes.Buffer{}
+		md := goldmark.New(
+			goldmark.WithExtensions(extension.GFM),
+			goldmark.WithParserOptions(
+				parser.WithAutoHeadingID(),
+			),
+			goldmark.WithRendererOptions(
+				html.WithXHTML(),
+			),
+		)
+
+		err := md.Convert([]byte(frag.Body), buf)
+		if err != nil {
+			return fmt.Errorf("unable to convert body to markdown: %w", err)
+		}
+
+		frag.Body = buf.String()
+
 		ctxPath := ctxPath + "/" + frag.ID()
 		dstDir := filepath.Join(dst, ctxPath)
 		if err := os.MkdirAll(dstDir, os.ModePerm); err != nil {
@@ -63,8 +86,12 @@ func normalizeAndCopyFiles(ctxPath string, frags []*nestor.Fragment, dst string)
 			}
 		}
 
-
 		for _, attachment := range frag.Attachments {
+			if strings.HasPrefix(attachment.Raw, "/") {
+				attachment.File = attachment.Raw
+				continue
+			}
+
 			dstFile := filepath.Join(dstDir, attachment.Raw)
 			err := rewrite(attachment, dstFile)
 			if err != nil && err != os.ErrNotExist {

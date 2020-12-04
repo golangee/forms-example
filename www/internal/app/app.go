@@ -4,7 +4,8 @@ import (
 	"github.com/golangee/forms-example/www/forms/router"
 	. "github.com/golangee/forms-example/www/forms/view"
 	"github.com/golangee/forms-example/www/internal/index"
-	c01s01s01 "github.com/golangee/forms-example/www/internal/tutorial-forms/01-chapter-setup/01-section-setup/01-setup"
+	c01s01s01 "github.com/golangee/forms-example/www/internal/tutorial/01-chapter-setup/01-section-setup/01-setup"
+	c02s03s01 "github.com/golangee/forms-example/www/internal/tutorial/02-chapter-essentials/03-section-modals/01-dialog"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
 )
@@ -21,7 +22,8 @@ func NewApplication() *Application {
 	}
 
 	a.router.AddRoute("/", a.apply(tutorialOverview))
-	a.router.AddRoute("/introducingforms/setup/install/step1/00-setup", a.applyNone(c01s01s01.Show))
+	a.router.AddRoute(c01s01s01.Path, a.applyNone(c01s01s01.Show))
+	a.router.AddRoute(c02s03s01.Path, a.applyNone(c02s03s01.FromQuery))
 
 	for _, chapter := range index.Tutorial.Fragments {
 		for _, section := range chapter.Fragments {
@@ -32,7 +34,9 @@ func NewApplication() *Application {
 
 	a.router.
 		SetUnhandledRouteAction(a.apply(func(query router.Query) Renderable {
-			return Span(Text("unmatched route to " + query.Path()))
+			return Div(Class("pt-20 text-center"),
+				Span(Class("border shadow-lg p-6 m-auto bg-red-300"), Text("unmatched route to "+query.Path())),
+			)
 		}))
 
 	return a

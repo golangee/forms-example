@@ -27,8 +27,8 @@ func (c *CodeView) LangProperty() *property.String {
 }
 
 func (c *CodeView) Render() Node {
-	return Pre(
-		Code(Class(c.lang.Get()),
+	return Pre(Class(c.lang.Get()),
+		Code(
 			Text(c.code.Get()),
 		),
 		// order is important here, because otherwise round the Code block has not been created yet

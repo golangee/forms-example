@@ -29,12 +29,12 @@ func (c *TextButton) SetCaption(caption Renderable) *TextButton {
 func (c *TextButton) Render() Node {
 	return Button(
 		//	Class(style.HoverBgPrimary, style.HoverTextOnPrimary, style.BgTransparent, style.TextPrimary, "focus:outline-none"),
-		Class("w-full text-left hover:bg-primary bg-opacity-10 bg-transparent text-primary focus:outline-none pt-2 pb-2 pl-3 pr-3 rounded"),
+		Class("text-left hover:bg-primary bg-opacity-10 bg-transparent text-primary focus:outline-none pt-2 pb-2 pl-3 pr-3 rounded"), // not w-full
 		AddClickListener(c.action),
 		c.caption,
 	)
 }
 
-func NewIconTextButton(icon string, text string, action func()) Renderable {
+func NewIconTextButton(icon string, text string, action func()) Component {
 	return NewTextButton(action).SetCaption(Span(ico.NewIcon(icon), Span(Class("pr-2")), Text(text)))
 }
