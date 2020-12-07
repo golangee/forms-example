@@ -1,6 +1,8 @@
 package dom
 
 import (
+	"github.com/golangee/log"
+	"github.com/golangee/log/ecs"
 	"syscall/js"
 )
 
@@ -124,6 +126,11 @@ func (n Element) AddKeyListener(typ string, f func(keyCode int)) Releasable {
 func (n Element) AddEventListener(typ string, once bool, listener func()) Releasable {
 	return n.addEventListener(typ, once, func(this js.Value, args []js.Value) interface{} {
 		args[0].Call("stopPropagation")
+		if listener == nil {
+			log.NewLogger().Print(ecs.Msg("event listener " + typ + " is nil"))
+			return nil
+		}
+
 		listener()
 		return nil
 	})

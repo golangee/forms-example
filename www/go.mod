@@ -9,5 +9,6 @@ require (
 	github.com/iancoleman/strcase v0.1.2 // indirect
 	github.com/worldiety/i18n v0.0.0-20200217125020-b17c54770fb1 // indirect
 	github.com/yuin/goldmark v1.2.1
+	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
 	golang.org/x/text v0.3.4 // indirect
 )

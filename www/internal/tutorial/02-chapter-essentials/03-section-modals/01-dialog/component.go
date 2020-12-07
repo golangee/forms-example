@@ -24,15 +24,19 @@ func (c *ContentView) Render() Node {
 		With(
 
 			button.NewTextButton(
+				"show dialog",
 				func() {
 					log.NewLogger().Print(ecs.Msg("wut?"))
-					modal.ShowDialog(
-						Div(
-							Text("hello dialog"),
-						),
+					modal.ShowAlertActions(
+						"Dialog Header",
+						"Dialog Text",
+						button.NewTextButton("Action 1", nil),
+						button.NewTextButton("Action 2", nil),
 					)
-				}).
-				SetCaption(Text("show dialog")),
+
+					modal.ShowAlert("Caution", "that way a very bad thing", "hm k")
+
+				}),
 
 			AddClass("m-auto"),
 		),

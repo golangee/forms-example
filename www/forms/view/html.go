@@ -172,6 +172,22 @@ func WithModifiers(m ...Modifier) Modifier {
 	})
 }
 
+// IfCond only evaluates the flag once and can not be changed afterwards.
+func IfCond(flag bool, pos, neg Renderable) Modifier {
+	return ModifierFunc(func(e dom.Element) {
+		if flag {
+			if pos != nil {
+				WithElement(e, pos).Element()
+			}
+		} else {
+			if neg != nil {
+				WithElement(e, neg).Element()
+			}
+		}
+	},
+	)
+}
+
 // If applies the given positive and negative modifiers in-place, without causing
 // an entire re-rendering, if the property changes. This improves performance
 // a lot.
