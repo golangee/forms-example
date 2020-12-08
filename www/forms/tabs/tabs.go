@@ -38,7 +38,7 @@ func (c *Tabs) Render() Node {
 				return Li(Class("-mb-px"),
 
 					A(Class("py-2 px-4 transform ease-in-out transition-colors duration-250 hover:bg-primary bg-opacity-10 bg-transparent"),
-						If(&tab.active, AddClass("border-b border-primary text-primary"), RemoveClass("border-b border-primary text-primary")),
+						IfCond(&tab.active, AddClass("border-b border-primary text-primary"), RemoveClass("border-b border-primary text-primary")),
 						AddClickListener(func() {
 							c.SetActive(i)
 						}),
@@ -51,7 +51,7 @@ func (c *Tabs) Render() Node {
 		ForEach(len(c.tabPanes), func(i int) Renderable {
 			tab := c.tabPanes[i]
 			return Div(Class("pt-2 ease-in-out transition-opacity duration-500 opacity-0"), // don't use absolute, because it breaks the layout system
-				If(&tab.active,
+				IfCond(&tab.active,
 					WithModifiers(
 						Style("visibility", "visible"),
 						AddClass("opacity-100"),

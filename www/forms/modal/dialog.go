@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// Dialog provides a half-translucent fullscreen view, which places any content just on top.
 type Dialog struct {
 	isOpen  property.Bool
 	content Renderable
@@ -39,7 +40,7 @@ func (c *Dialog) Render() Node {
 	// semi-transparent content blocking layer
 	return Div(
 		Div(Class(" z-10 fixed ease-in-out inset-0 bg-black opacity-0 transition-all duration-200"),
-			If(&c.isOpen,
+			IfCond(&c.isOpen,
 				WithModifiers(
 					Style("visibility", "visible"),
 					AddClass("opacity-50"),
@@ -57,7 +58,7 @@ func (c *Dialog) Render() Node {
 
 		Div(Class("absolute inset-0 ease-in-out transition-all opacity-0 duration-200 flex z-20"),
 			AddClickListener(c.isOpen.Toggle),
-			If(&c.isOpen,
+			IfCond(&c.isOpen,
 				AddClass("opacity-100"),
 				RemoveClass("opacity-100"),
 			),

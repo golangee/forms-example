@@ -164,6 +164,18 @@ func RemoveClass(classes ...string) Modifier {
 	})
 }
 
+func SetAttribute(attr, value string) Modifier {
+	return ModifierFunc(func(e dom.Element) {
+		e.SetAttribute(attr, value)
+	})
+}
+
+func RemoveAttribute(attr string) Modifier {
+	return ModifierFunc(func(e dom.Element) {
+		e.RemoveAttribute(attr)
+	})
+}
+
 func WithModifiers(m ...Modifier) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		for _, modifier := range m {
@@ -172,8 +184,10 @@ func WithModifiers(m ...Modifier) Modifier {
 	})
 }
 
-// IfCond only evaluates the flag once and can not be changed afterwards.
-func IfCond(flag bool, pos, neg Renderable) Modifier {
+// If only evaluates the flag once and can not be changed afterwards. It is useful in non-components
+// or if properties are not needed, because a full rendering will be done anyway. See also IfCond for
+// a more efficient way of changing properties.
+func If(flag bool, pos, neg Renderable) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		if flag {
 			if pos != nil {
@@ -184,14 +198,13 @@ func IfCond(flag bool, pos, neg Renderable) Modifier {
 				WithElement(e, neg).Element()
 			}
 		}
-	},
-	)
+	})
 }
 
-// If applies the given positive and negative modifiers in-place, without causing
+// IfCond applies the given positive and negative modifiers in-place, without causing
 // an entire re-rendering, if the property changes. This improves performance
-// a lot.
-func If(p *property.Bool, pos, neg Modifier) Modifier {
+// a lot. See also If.
+func IfCond(p *property.Bool, pos, neg Modifier) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		if p.Get() {
 			if pos != nil {
@@ -423,6 +436,18 @@ func AddEventListenerOnce(eventType string, f func()) Modifier {
 func AriaLabel(label string) Modifier {
 	return ModifierFunc(func(e dom.Element) {
 		e.SetAttribute("aria-label", label)
+	})
+}
+
+func AriaOrientation(orientation string) Modifier {
+	return ModifierFunc(func(e dom.Element) {
+		e.SetAttribute("aria-orientation", orientation)
+	})
+}
+
+func AriaLabelledby(label string) Modifier {
+	return ModifierFunc(func(e dom.Element) {
+		e.SetAttribute("aria-labelledby", label)
 	})
 }
 

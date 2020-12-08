@@ -94,6 +94,12 @@ func (n Element) SetAttribute(a string, x interface{}) Element {
 	return n
 }
 
+// RemoveAttribute deletes the html attribute.
+func (n Element) RemoveAttribute(a string) Element {
+	n.val.Call("removeAttribute", a)
+	return n
+}
+
 // Call is an unclean abstraction and can invoke attached javascript methods.
 // Args which are elements, are internally unwrapped.
 func (n Element) Call(name string, args ...interface{}) Element {
@@ -105,8 +111,8 @@ func (n Element) Call(name string, args ...interface{}) Element {
 		}
 	}
 
-	n.val.Call(name, tmp...)
-	return n
+	res := n.val.Call(name, tmp...)
+	return newElement(res)
 }
 
 // The keydown event is fired when a key is pressed. See also

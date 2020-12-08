@@ -6,6 +6,7 @@ import (
 	"github.com/golangee/forms-example/www/internal/index"
 	c01s01s01 "github.com/golangee/forms-example/www/internal/tutorial/01-chapter-setup/01-section-setup/01-setup"
 	c02s03s01 "github.com/golangee/forms-example/www/internal/tutorial/02-chapter-essentials/03-section-modals/01-dialog"
+	c02s03s02 "github.com/golangee/forms-example/www/internal/tutorial/02-chapter-essentials/03-section-modals/02-menu"
 	"github.com/golangee/log"
 	"github.com/golangee/log/ecs"
 )
@@ -24,6 +25,7 @@ func NewApplication() *Application {
 	a.router.AddRoute("/", a.apply(tutorialOverview))
 	a.router.AddRoute(c01s01s01.Path, a.applyNone(c01s01s01.Show))
 	a.router.AddRoute(c02s03s01.Path, a.applyNone(c02s03s01.FromQuery))
+	a.router.AddRoute(c02s03s02.Path, a.applyNone(c02s03s02.FromQuery))
 
 	for _, chapter := range index.Tutorial.Fragments {
 		for _, section := range chapter.Fragments {

@@ -1,6 +1,6 @@
 // Package t04helloproperty demonstrates the usage of a property and the automatic re-rendering. The lifecycle
 // is quite complex behind the scenes, because the property.Property invalidates its attached parent
-// (a property.Invalidator which is introduced by embedding a view.View). If performing a rendering (e.g.
+// (a property.Invalidator which is introduced by embedding a view.View). IfCond performing a rendering (e.g.
 // by using view.WithElement), the view.Component is observed and each future observed invalidation (e.g. caused
 // by either calling view.View#Invalidate or by property.Property#Set), releases the lastly
 // created view.Node (which created a dom.Element behind the scenes). Note, that each dom.Element#Release

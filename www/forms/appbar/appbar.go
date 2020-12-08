@@ -7,7 +7,7 @@ import (
 )
 
 // The AppBar provides a drawer area (side menu) at the left and a toolbar area at the top. It has only limited
-// capabilities for customization. If you are sure, that you really need a custom AppBar, feel free to
+// capabilities for customization. IfCond you are sure, that you really need a custom AppBar, feel free to
 // copy-paste to start a new component for your specific project.
 type AppBar struct {
 	isOpen       property.Bool
@@ -117,7 +117,7 @@ func (c *AppBar) Render() Node {
 			Div(
 				Class(" z-10 fixed ease-in-out inset-0 bg-black opacity-0 transition-all duration-500"),
 
-				If(&c.isOpen,
+				IfCond(&c.isOpen,
 					WithModifiers(
 						Style("visibility", "visible"),
 						AddClass("opacity-50"),
@@ -139,7 +139,7 @@ func (c *AppBar) Render() Node {
 			Aside(
 				Class("transform top-0 left-0 w-64 bg-white fixed h-full overflow-auto ease-in-out transition-all duration-500 z-30"),
 
-				If(&c.isOpen,
+				IfCond(&c.isOpen,
 					WithModifiers(
 						AddClass("translate-x-0"),
 						RemoveClass("-translate-x-full"),

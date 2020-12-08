@@ -99,7 +99,7 @@ func attachmentPane(at *nestor.Attachment) Renderable {
 			Div(Class("text-center"),
 				Span(Class("m-2"),
 					Style("display", "inline-block"),
-					If(pg.VisibleProperty(), Style("display", "inline-block"), Style("display", "none")),
+					IfCond(pg.VisibleProperty(), Style("display", "inline-block"), Style("display", "none")),
 					pg,
 				),
 			),
