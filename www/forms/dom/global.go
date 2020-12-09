@@ -1,6 +1,18 @@
 package dom
 
-import "syscall/js"
+import (
+	"strconv"
+	"sync/atomic"
+	"syscall/js"
+)
+
+var idCounter = int32(0)
+
+// GenerateID returns the next unique identifier for dom elements.
+func GenerateID() string {
+	v := atomic.AddInt32(&idCounter, 1)
+	return strconv.Itoa(int(v))
+}
 
 type Global struct {
 	val js.Value

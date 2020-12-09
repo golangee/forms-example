@@ -7,6 +7,12 @@ type Releasable interface {
 	Release()
 }
 
+type ReleaseFunc func()
+
+func (f ReleaseFunc) Release() {
+	f()
+}
+
 type Window struct {
 	val js.Value
 }
@@ -62,4 +68,36 @@ func (n Window) Location() Location {
 func (n Window) SetLocation(url string) Window {
 	n.val.Set("location", url)
 	return n
+}
+
+func (n Window) AddEventListener(typ string, listener func()) Releasable {
+	actualFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		defer GlobalPanicHandler()
+
+		listener()
+		return nil
+	})
+
+	n.val.Call("addEventListener", typ, actualFunc)
+
+	return ReleaseFunc(func() {
+		n.val.Call("removeEventListener", typ, actualFunc)
+		actualFunc.Release()
+	})
+}
+
+// MatchesMedia is the javascript equivalent to css media queries. criteria is for example
+//  - (min-width:800px)
+//  - (min-width:800px) or (orientation: landscape)
+//  - (max-width: 800px)
+func (n Window) MatchesMedia(criteria string) bool {
+	return n.val.Call("matchMedia", criteria).Get("matches").Bool()
+}
+
+func (n Window) InnerWidth() int {
+	return n.val.Get("innerWidth").Int()
+}
+
+func (n Window) InnerHeight() int {
+	return n.val.Get("innerHeight").Int()
 }

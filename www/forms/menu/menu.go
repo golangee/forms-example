@@ -1,6 +1,9 @@
-package modal
+package menu
 
-import . "github.com/golangee/forms-example/www/forms/view"
+import (
+	"github.com/golangee/forms-example/www/forms/modal"
+	. "github.com/golangee/forms-example/www/forms/view"
+)
 
 // Menu provides the basic frame and design for a material design popup menu.
 type Menu struct {
@@ -13,7 +16,7 @@ func NewMenu(content Renderable) *Menu {
 }
 
 func (c *Menu) Render() Node {
-	return Div(Class("origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 m-4 md:m-0"),
+	return Div(Class("w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"),
 		Style("max-width", "90vw"),
 		Div(Class("py-1"), Role("menu"), AriaOrientation("vertical"),
 			c.content,
@@ -37,26 +40,8 @@ func (c *MenuItem) Render() Node {
 	)
 }
 
-// PopupMenu takes a Renderable as a trigger and pops a menu up.
-type PopupMenu struct {
-	View
-	parent Renderable
-	menu   *Menu
-}
-
-func NewPopupMenu(parent, menuContent Renderable) *PopupMenu {
-	return &PopupMenu{parent: parent, menu: NewMenu(menuContent)}
-}
-
-func (c *PopupMenu) Render() Node {
-	return Div(Class("md:relative inline-block text-left"),
-		Div(
-			Span(c.parent, AddClickListener(func() {
-
-			})),
-			c.menu,
-
-		),
-
-	)
+// ShowPopup tries to popup the content intelligent around the given anchor, considering window size and other
+// alignment rules. The Popup is closed automatically when clicked outside. The anchor must denote a valid ID.
+func ShowPopup(anchorID string, menuContent Renderable) {
+	modal.ShowOverlay(modal.NewOverlay().Put(anchorID,menuContent))
 }

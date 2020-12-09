@@ -250,3 +250,25 @@ func (n Element) LastChild() Element {
 func (n Element) Equal(o Element) bool {
 	return n.val.Equal(o.val)
 }
+
+// IsNull returns true, if the represented Element is actually a null value.
+func (n Element) IsNull() bool {
+	return n.val.IsNull()
+}
+
+// GetID returns the empty string or the according unique element id. See also
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/id.
+func (n Element) GetID() string {
+	return n.val.Get("id").String()
+}
+
+// SetID update the according unique element id. See also
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/id.
+func (n Element) SetID(id string) {
+	n.val.Set("id", id)
+}
+
+// See https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect.
+func (n Element) GetBoundingClientRect() Rect {
+	return newRect(n.val.Call("getBoundingClientRect"))
+}

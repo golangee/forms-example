@@ -10,6 +10,10 @@ func newDocument(val js.Value) Document {
 	return Document{val}
 }
 
+func GetDocument() Document {
+	return GetWindow().Document()
+}
+
 func (n Document) Body() Element {
 	return newElement(n.val.Get("body"))
 }
@@ -34,4 +38,10 @@ func (n Document) CreateElementNS(ns string, name string) Element {
 func (n Document) DocumentElement() Element {
 	body := n.val.Get("documentElement")
 	return newElement(body)
+}
+
+// GeElementById follows https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementById.
+// If not found, returns an Element whose Element.IsNull method will return true.
+func (n Document) GetElementById(id string) Element {
+	return newElement(n.val.Call("getElementById", id))
 }

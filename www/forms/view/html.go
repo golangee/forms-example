@@ -356,10 +356,42 @@ func Span(mods ...Renderable) Node {
 	return Element("span", mods...)
 }
 
-// With post-modifies the given component for each future rendering. TODO unclear if it would better fit as a method at View, to also support invalidation properly
-func With(r Component, mods ...Modifier) Component {
+// WithComponent post-modifies the given Component for each future rendering.
+func WithComponent(r Component, mods ...Modifier) Component {
 	r.setPostModifiers(mods)
 	return r
+}
+
+func ID(id string)Modifier{
+	return ModifierFunc(func(e dom.Element) {
+		e.SetID(id)
+	})
+}
+
+// With post-modifies the given Renderable for each future rendering.
+func With(r Renderable, mods ...Modifier) Renderable {
+	switch t := r.(type) {
+	case Component:
+		return WithComponent(t, mods...)
+	case Node:
+		return NodeFunc(func() dom.Element {
+			elem := t.Element()
+			tmp := make([]Renderable, 0, len(mods))
+			for _, mod := range mods {
+				tmp = append(tmp, mod)
+			}
+			WithElement(elem, tmp...)
+			return elem
+		})
+	case Modifier:
+		return ModifierFunc(func(e dom.Element) {
+			for _, mod := range mods {
+				mod.Modify(e)
+			}
+		})
+	default:
+		panic(fmt.Sprintf(reflect.TypeOf(r).String()))
+	}
 }
 
 /* TODO what is that use case?
